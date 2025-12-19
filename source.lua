@@ -1,3 +1,6 @@
+-- CHUDDY HUB | Made by foeky
+-- Ultimate UI Library for Roblox
+
 local UIS=game:GetService("UserInputService")
 local TS=game:GetService("TweenService")
 local Players=game:GetService("Players")
@@ -17,115 +20,23 @@ local ThemePresets={
 }
 
 local Theme=table.clone(ThemePresets.Chudjak)
-
-local Icons={
-	Close="rbxassetid://10747384394",
-	Minimize="rbxassetid://120790558573821",
-	Maximize="rbxassetid://79794905110301",
-	Settings="rbxassetid://10734949856",
-	User="rbxassetid://10747372992",
-	Dropdown="rbxassetid://10709790948"
-}
-
-local function Tween(obj,props,time)
-	if not obj or not obj.Parent then return end
-	TS:Create(obj,TweenInfo.new(time or 0.2,Enum.EasingStyle.Quad),props):Play()
-end
-
-local function GetParent()
-	return pcall(gethui)and gethui()or LP:WaitForChild("PlayerGui")
-end
-
-local function Corner(p,r)
-	local c=Instance.new("UICorner")
-	c.CornerRadius=UDim.new(0,r or 6)
-	c.Parent=p
-	return c
-end
-
-local function Stroke(p,col,t)
-	local s=Instance.new("UIStroke")
-	s.Color=col or Theme.Stroke
-	s.Thickness=t or 1
-	s.Parent=p
-	return s
-end
-
-local function Padding(p,t,l,r,b)
-	local pad=Instance.new("UIPadding")
-	pad.PaddingTop=UDim.new(0,t or 0)
-	pad.PaddingLeft=UDim.new(0,l or 0)
-	pad.PaddingRight=UDim.new(0,r or 0)
-	pad.PaddingBottom=UDim.new(0,b or 0)
-	pad.Parent=p
-	return pad
-end
-
+local Icons={Close="rbxassetid://10747384394",Minimize="rbxassetid://120790558573821",Maximize="rbxassetid://79794905110301",Settings="rbxassetid://10734949856",User="rbxassetid://10747372992",Dropdown="rbxassetid://10709790948"}
 local ConfigFolder="ChuddyHub"
 
-local function SaveConfig(name,data)
-	if not isfolder(ConfigFolder)then makefolder(ConfigFolder)end
-	writefile(ConfigFolder.."/"..name..".json",Http:JSONEncode(data))
-end
+local function Tween(obj,props,time)if not obj or not obj.Parent then return end;TS:Create(obj,TweenInfo.new(time or.2,Enum.EasingStyle.Quad),props):Play()end
+local function GetParent()return pcall(gethui)and gethui()or LP:WaitForChild("PlayerGui")end
+local function Corner(p,r)local c=Instance.new("UICorner")c.CornerRadius=UDim.new(0,r or 6)c.Parent=p return c end
+local function Stroke(p,col,t)local s=Instance.new("UIStroke")s.Color=col or Theme.Stroke;s.Thickness=t or 1;s.Parent=p return s end
+local function Padding(p,t,l,r,b)local pad=Instance.new("UIPadding")pad.PaddingTop=UDim.new(0,t or 0)pad.PaddingLeft=UDim.new(0,l or 0)pad.PaddingRight=UDim.new(0,r or 0)pad.PaddingBottom=UDim.new(0,b or 0)pad.Parent=p return pad end
 
-local function LoadConfig(name)
-	local path=ConfigFolder.."/"..name..".json"
-	if isfile(path)then return Http:JSONDecode(readfile(path))end
-	return nil
-end
-
-local function GetConfigs()
-	if not isfolder(ConfigFolder)then return{}end
-	local configs={}
-	for _,file in ipairs(listfiles(ConfigFolder))do
-		if file:match("%.json$")and not file:match("theme_")then
-			local n=file:match("([^/\\]+)%.json$")
-			table.insert(configs,n)
-		end
-	end
-	return configs
-end
-
-local function SaveTheme(name,themeData)
-	if not isfolder(ConfigFolder)then makefolder(ConfigFolder)end
-	writefile(ConfigFolder.."/theme_"..name..".json",Http:JSONEncode(themeData))
-end
-
-local function LoadTheme(name)
-	local path=ConfigFolder.."/theme_"..name..".json"
-	if isfile(path)then return Http:JSONDecode(readfile(path))end
-	return nil
-end
-
-local function GetThemes()
-	if not isfolder(ConfigFolder)then return{}end
-	local themes={}
-	for _,file in ipairs(listfiles(ConfigFolder))do
-		if file:match("theme_")and file:match("%.json$")then
-			local n=file:match("theme_([^/\\]+)%.json$")
-			table.insert(themes,n)
-		end
-	end
-	return themes
-end
-
-local function DeleteConfig(name)
-	local path=ConfigFolder.."/"..name..".json"
-	if isfile(path)then delfile(path)end
-end
-
-local function DeleteTheme(name)
-	local path=ConfigFolder.."/theme_"..name..".json"
-	if isfile(path)then delfile(path)end
-end
-
-local function ApplyTheme(newTheme)
-	for k,v in pairs(newTheme)do Theme[k]=v end
-end
-
-local function ExportTheme()
-	return Http:JSONEncode(Theme)
-end
+local function SaveConfig(name,data)if not isfolder(ConfigFolder)then makefolder(ConfigFolder)end;writefile(ConfigFolder.."/"..name..".json",Http:JSONEncode(data))end
+local function LoadConfig(name)local path=ConfigFolder.."/"..name..".json"if isfile(path)then return Http:JSONDecode(readfile(path))end;return nil end
+local function GetConfigs()if not isfolder(ConfigFolder)then return{}end;local configs={}for _,file in ipairs(listfiles(ConfigFolder))do if file:match("%.json$")and not file:match("theme_")then table.insert(configs,file:match("([^/\\]+)%.json$"))end end;return configs end
+local function SaveTheme(name,themeData)if not isfolder(ConfigFolder)then makefolder(ConfigFolder)end;writefile(ConfigFolder.."/theme_"..name..".json",Http:JSONEncode(themeData))end
+local function LoadTheme(name)local path=ConfigFolder.."/theme_"..name..".json"if isfile(path)then return Http:JSONDecode(readfile(path))end;return nil end
+local function GetThemes()if not isfolder(ConfigFolder)then return{}end;local themes={}for _,file in ipairs(listfiles(ConfigFolder))do if file:match("theme_")and file:match("%.json$")then table.insert(themes,file:match("theme_([^/\\]+)%.json$"))end end;return themes end
+local function DeleteConfig(name)local path=ConfigFolder.."/"..name..".json"if isfile(path)then delfile(path)end end
+local function DeleteTheme(name)local path=ConfigFolder.."/theme_"..name..".json"if isfile(path)then delfile(path)end end
 
 function Chuddy:CreateWindow(cfg)
 	cfg=cfg or{}
@@ -145,13 +56,12 @@ function Chuddy:CreateWindow(cfg)
 	local Main=Instance.new("Frame")
 	Main.Name="Main"
 	Main.Size=UDim2.new(0,750,0,550)
-	Main.Position=UDim2.new(0.5,-375,0.5,-275)
+	Main.Position=UDim2.new(.5,-375,.5,-275)
 	Main.BackgroundColor3=Theme.Main
 	Main.BorderSizePixel=0
 	Main.ClipsDescendants=true
 	Main.Parent=SGui
-	Corner(Main,8)
-	Stroke(Main,Theme.Stroke,1)
+	Corner(Main,8)Stroke(Main,Theme.Stroke,1)
 	
 	local Sidebar=Instance.new("Frame")
 	Sidebar.Name="Sidebar"
@@ -174,7 +84,7 @@ function Chuddy:CreateWindow(cfg)
 	
 	local Logo=Instance.new("ImageLabel")
 	Logo.Size=UDim2.new(0,30,0,30)
-	Logo.Position=UDim2.new(0,15,0.5,-15)
+	Logo.Position=UDim2.new(0,15,.5,-15)
 	Logo.BackgroundTransparency=1
 	Logo.Image="rbxassetid://120758864298455"
 	Logo.Parent=Header
@@ -182,8 +92,8 @@ function Chuddy:CreateWindow(cfg)
 	
 	local Title=Instance.new("TextLabel")
 	Title.Text=WinName
-	Title.Size=UDim2.new(1,-60,1,0)
-	Title.Position=UDim2.new(0,55,0,0)
+	Title.Size=UDim2.new(1,-60,0,20)
+	Title.Position=UDim2.new(0,55,0,12)
 	Title.BackgroundTransparency=1
 	Title.TextColor3=Theme.Text
 	Title.Font=Enum.Font.GothamBold
@@ -191,6 +101,17 @@ function Chuddy:CreateWindow(cfg)
 	Title.TextXAlignment=Enum.TextXAlignment.Left
 	Title.TextTruncate=Enum.TextTruncate.AtEnd
 	Title.Parent=Header
+	
+	local Credit=Instance.new("TextLabel")
+	Credit.Text="by foeky"
+	Credit.Size=UDim2.new(1,-60,0,12)
+	Credit.Position=UDim2.new(0,55,0,32)
+	Credit.BackgroundTransparency=1
+	Credit.TextColor3=Theme.TextDim
+	Credit.Font=Enum.Font.Gotham
+	Credit.TextSize=9
+	Credit.TextXAlignment=Enum.TextXAlignment.Left
+	Credit.Parent=Header
 	
 	local UserProfile=Instance.new("Frame")
 	UserProfile.Size=UDim2.new(1,0,0,65)
@@ -208,7 +129,7 @@ function Chuddy:CreateWindow(cfg)
 	
 	local Avatar=Instance.new("ImageLabel")
 	Avatar.Size=UDim2.new(0,36,0,36)
-	Avatar.Position=UDim2.new(0,12,0.5,-18)
+	Avatar.Position=UDim2.new(0,12,.5,-18)
 	Avatar.BackgroundColor3=Theme.Element
 	Avatar.Parent=UserProfile
 	Corner(Avatar,18)
@@ -221,7 +142,7 @@ function Chuddy:CreateWindow(cfg)
 	local Username=Instance.new("TextLabel")
 	Username.Text=LP.Name
 	Username.Size=UDim2.new(1,-60,0,20)
-	Username.Position=UDim2.new(0,58,0.5,-10)
+	Username.Position=UDim2.new(0,58,.5,-10)
 	Username.BackgroundTransparency=1
 	Username.TextColor3=Theme.Text
 	Username.Font=Enum.Font.GothamBold
@@ -233,7 +154,7 @@ function Chuddy:CreateWindow(cfg)
 	local Rank=Instance.new("TextLabel")
 	Rank.Text="Certified Chad"
 	Rank.Size=UDim2.new(1,-60,0,15)
-	Rank.Position=UDim2.new(0,58,0.5,4)
+	Rank.Position=UDim2.new(0,58,.5,4)
 	Rank.BackgroundTransparency=1
 	Rank.TextColor3=Theme.Accent
 	Rank.Font=Enum.Font.Gotham
@@ -254,7 +175,7 @@ function Chuddy:CreateWindow(cfg)
 	TabContainer.BorderSizePixel=0
 	TabContainer.ScrollBarThickness=3
 	TabContainer.ScrollBarImageColor3=Theme.Stroke
-	TabContainer.ScrollBarImageTransparency=0.5
+	TabContainer.ScrollBarImageTransparency=.5
 	TabContainer.AutomaticCanvasSize=Enum.AutomaticSize.Y
 	TabContainer.CanvasSize=UDim2.new(0,0,0,0)
 	TabContainer.Parent=Sidebar
@@ -293,8 +214,7 @@ function Chuddy:CreateWindow(cfg)
 		btn.Image=ico
 		btn.ImageColor3=Theme.TextDim
 		btn.Parent=TopBar
-		Corner(btn,6)
-		Padding(btn,8,8,8,8)
+		Corner(btn,6)Padding(btn,8,8,8,8)
 		btn.MouseEnter:Connect(function()Tween(btn,{ImageColor3=Theme.Text,BackgroundColor3=Theme.ElementHover})end)
 		btn.MouseLeave:Connect(function()Tween(btn,{ImageColor3=Theme.TextDim,BackgroundColor3=Theme.Element})end)
 		return btn
@@ -304,28 +224,28 @@ function Chuddy:CreateWindow(cfg)
 	local MinBtn=WinControl(Icons.Minimize,"Min")
 	
 	CloseBtn.MouseButton1Click:Connect(function()
-		for _,c in pairs(Connections)do
-			if c and c.Disconnect then c:Disconnect()end
-		end
-		Tween(Main,{Size=UDim2.new(0,0,0,0)},0.3)
-		task.wait(0.3)
+		for _,c in pairs(Connections)do if c and c.Disconnect then c:Disconnect()end end
+		Tween(Main,{Size=UDim2.new(0,0,0,0)},.3)
+		task.wait(.3)
 		SGui:Destroy()
 	end)
 	
 	local Minimized=false
 	local OldSize=Main.Size
 	local MinBar
+	local ResizeIndicator
 	
 	MinBtn.MouseButton1Click:Connect(function()
 		Minimized=not Minimized
 		
 		if Minimized then
 			OldSize=Main.Size
-			local miniWidth=math.max(300,OldSize.X.Offset*0.4)
+			local miniWidth=math.max(300,OldSize.X.Offset*.4)
 			local miniHeight=50
 			Sidebar.Visible=false
 			Content.Visible=false
-			Tween(Main,{Size=UDim2.new(0,miniWidth,0,miniHeight)},0.3)
+			if ResizeIndicator then ResizeIndicator.Visible=false end
+			Tween(Main,{Size=UDim2.new(0,miniWidth,0,miniHeight)},.3)
 			
 			MinBar=Instance.new("Frame")
 			MinBar.Name="MinBar"
@@ -346,13 +266,12 @@ function Chuddy:CreateWindow(cfg)
 			
 			local MaxBtn=Instance.new("ImageButton")
 			MaxBtn.Size=UDim2.new(0,32,0,32)
-			MaxBtn.Position=UDim2.new(1,-82,0.5,-16)
+			MaxBtn.Position=UDim2.new(1,-82,.5,-16)
 			MaxBtn.BackgroundColor3=Theme.Element
 			MaxBtn.Image=Icons.Maximize
 			MaxBtn.ImageColor3=Theme.TextDim
 			MaxBtn.Parent=MinBar
-			Corner(MaxBtn,6)
-			Padding(MaxBtn,8,8,8,8)
+			Corner(MaxBtn,6)Padding(MaxBtn,8,8,8,8)
 			
 			MaxBtn.MouseEnter:Connect(function()Tween(MaxBtn,{ImageColor3=Theme.Text,BackgroundColor3=Theme.ElementHover})end)
 			MaxBtn.MouseLeave:Connect(function()Tween(MaxBtn,{ImageColor3=Theme.TextDim,BackgroundColor3=Theme.Element})end)
@@ -360,31 +279,29 @@ function Chuddy:CreateWindow(cfg)
 			MaxBtn.MouseButton1Click:Connect(function()
 				Minimized=false
 				if MinBar then MinBar:Destroy()end
-				Tween(Main,{Size=OldSize},0.3)
-				task.wait(0.25)
+				Tween(Main,{Size=OldSize},.3)
+				task.wait(.25)
 				Sidebar.Visible=true
 				Content.Visible=true
+				if ResizeIndicator then ResizeIndicator.Visible=true end
 			end)
 			
 			local MiniClose=Instance.new("ImageButton")
 			MiniClose.Size=UDim2.new(0,32,0,32)
-			MiniClose.Position=UDim2.new(1,-42,0.5,-16)
+			MiniClose.Position=UDim2.new(1,-42,.5,-16)
 			MiniClose.BackgroundColor3=Theme.Element
 			MiniClose.Image=Icons.Close
 			MiniClose.ImageColor3=Theme.TextDim
 			MiniClose.Parent=MinBar
-			Corner(MiniClose,6)
-			Padding(MiniClose,8,8,8,8)
+			Corner(MiniClose,6)Padding(MiniClose,8,8,8,8)
 			
 			MiniClose.MouseEnter:Connect(function()Tween(MiniClose,{ImageColor3=Theme.Text,BackgroundColor3=Theme.ElementHover})end)
 			MiniClose.MouseLeave:Connect(function()Tween(MiniClose,{ImageColor3=Theme.TextDim,BackgroundColor3=Theme.Element})end)
 			
 			MiniClose.MouseButton1Click:Connect(function()
-				for _,c in pairs(Connections)do
-					if c and c.Disconnect then c:Disconnect()end
-				end
-				Tween(Main,{Size=UDim2.new(0,0,0,0)},0.3)
-				task.wait(0.3)
+				for _,c in pairs(Connections)do if c and c.Disconnect then c:Disconnect()end end
+				Tween(Main,{Size=UDim2.new(0,0,0,0)},.3)
+				task.wait(.3)
 				SGui:Destroy()
 			end)
 			
@@ -403,7 +320,7 @@ function Chuddy:CreateWindow(cfg)
 			UIS.InputChanged:Connect(function(input)
 				if dragging and input.UserInputType==Enum.UserInputType.MouseMovement then
 					local delta=input.Position-dragStart
-					Tween(Main,{Position=UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y)},0.05)
+					Tween(Main,{Position=UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y)},.05)
 				end
 			end)
 		end
@@ -435,46 +352,24 @@ function Chuddy:CreateWindow(cfg)
 	MakeDraggable(TopBar)
 	
 	UIS.InputChanged:Connect(function(input)
-		if input.UserInputType==Enum.UserInputType.MouseMovement and dragging then
+		if input.UserInputType==Enum.UserInputType.MouseMovement and dragging and not Minimized then
 			local delta=input.Position-dragStart
-			Tween(Main,{Position=UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y)},0.05)
+			Tween(Main,{Position=UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y)},.05)
 		end
 	end)
 	
-	local ResizeIndicator=Instance.new("Frame")
+	ResizeIndicator=Instance.new("Frame")
 	ResizeIndicator.Name="ResizeIndicator"
 	ResizeIndicator.Size=UDim2.new(0,20,0,20)
 	ResizeIndicator.Position=UDim2.new(1,-20,1,-20)
 	ResizeIndicator.BackgroundTransparency=1
 	ResizeIndicator.Parent=Main
 	
-	local Corner1=Instance.new("Frame")
-	Corner1.Size=UDim2.new(0,2,0,10)
-	Corner1.Position=UDim2.new(1,-2,1,-10)
-	Corner1.BackgroundColor3=Theme.TextDim
-	Corner1.BorderSizePixel=0
-	Corner1.Parent=ResizeIndicator
-	
-	local Corner2=Instance.new("Frame")
-	Corner2.Size=UDim2.new(0,10,0,2)
-	Corner2.Position=UDim2.new(1,-10,1,-2)
-	Corner2.BackgroundColor3=Theme.TextDim
-	Corner2.BorderSizePixel=0
-	Corner2.Parent=ResizeIndicator
-	
-	local Corner3=Instance.new("Frame")
-	Corner3.Size=UDim2.new(0,2,0,6)
-	Corner3.Position=UDim2.new(1,-6,1,-6)
-	Corner3.BackgroundColor3=Theme.TextDim
-	Corner3.BorderSizePixel=0
-	Corner3.Parent=ResizeIndicator
-	
-	local Corner4=Instance.new("Frame")
-	Corner4.Size=UDim2.new(0,6,0,2)
-	Corner4.Position=UDim2.new(1,-6,1,-6)
-	Corner4.BackgroundColor3=Theme.TextDim
-	Corner4.BorderSizePixel=0
-	Corner4.Parent=ResizeIndicator
+	do local c1,c2,c3,c4=Instance.new("Frame"),Instance.new("Frame"),Instance.new("Frame"),Instance.new("Frame")
+	c1.Size,c1.Position,c1.BackgroundColor3,c1.BorderSizePixel=UDim2.new(0,2,0,10),UDim2.new(1,-2,1,-10),Theme.TextDim,0;c1.Parent=ResizeIndicator
+	c2.Size,c2.Position,c2.BackgroundColor3,c2.BorderSizePixel=UDim2.new(0,10,0,2),UDim2.new(1,-10,1,-2),Theme.TextDim,0;c2.Parent=ResizeIndicator
+	c3.Size,c3.Position,c3.BackgroundColor3,c3.BorderSizePixel=UDim2.new(0,2,0,6),UDim2.new(1,-6,1,-6),Theme.TextDim,0;c3.Parent=ResizeIndicator
+	c4.Size,c4.Position,c4.BackgroundColor3,c4.BorderSizePixel=UDim2.new(0,6,0,2),UDim2.new(1,-6,1,-6),Theme.TextDim,0;c4.Parent=ResizeIndicator end
 	
 	local resizing,resizeStart,startSize
 	ResizeIndicator.InputBegan:Connect(function(input)
@@ -493,14 +388,14 @@ function Chuddy:CreateWindow(cfg)
 			local delta=input.Position-resizeStart
 			local newW=math.clamp(startSize.X.Offset+delta.X,600,1400)
 			local newH=math.clamp(startSize.Y.Offset+delta.Y,400,900)
-			Tween(Main,{Size=UDim2.new(0,newW,0,newH)},0.05)
+			Tween(Main,{Size=UDim2.new(0,newW,0,newH)},.05)
 		end
 	end)
 	
 	local Tabs={}
 	local FirstTab=true
 	local ActiveTab=nil
-	local UniversalTabCreated=false
+	local PlayerTabCreated=false
 	
 	function Tabs:CreateTab(name,icon)
 		local TabBtn=Instance.new("TextButton")
@@ -510,14 +405,14 @@ function Chuddy:CreateWindow(cfg)
 		TabBtn.BackgroundColor3=Theme.Element
 		TabBtn.AutoButtonColor=false
 		TabBtn.Text=""
-		TabBtn.LayoutOrder=name=="Universal"and 0 or 1
+		TabBtn.LayoutOrder=name=="Player"and 0 or 1
 		TabBtn.Parent=TabContainer
 		Corner(TabBtn,6)
 		
 		local Ico=Instance.new("ImageLabel")
 		Ico.Name="Icon"
 		Ico.Size=UDim2.new(0,20,0,20)
-		Ico.Position=UDim2.new(0,12,0.5,-10)
+		Ico.Position=UDim2.new(0,12,.5,-10)
 		Ico.BackgroundTransparency=1
 		Ico.Image=icon or Icons.User
 		Ico.ImageColor3=Theme.TextDim
@@ -543,7 +438,7 @@ function Chuddy:CreateWindow(cfg)
 		Page.BorderSizePixel=0
 		Page.ScrollBarThickness=4
 		Page.ScrollBarImageColor3=Theme.Stroke
-		Page.ScrollBarImageTransparency=0.3
+		Page.ScrollBarImageTransparency=.3
 		Page.AutomaticCanvasSize=Enum.AutomaticSize.Y
 		Page.CanvasSize=UDim2.new(0,0,0,0)
 		Page.Visible=false
@@ -586,16 +481,13 @@ function Chuddy:CreateWindow(cfg)
 		
 		TabBtn.MouseButton1Click:Connect(Activate)
 		TabBtn.MouseEnter:Connect(function()
-			if ActiveTab~=name then Tween(TabBtn,{BackgroundColor3=Theme.Element,BackgroundTransparency=0.5})end
+			if ActiveTab~=name then Tween(TabBtn,{BackgroundColor3=Theme.Element,BackgroundTransparency=.5})end
 		end)
 		TabBtn.MouseLeave:Connect(function()
 			if ActiveTab~=name then Tween(TabBtn,{BackgroundTransparency=1})end
 		end)
 		
-		if FirstTab then
-			FirstTab=false
-			Activate()
-		end
+		if FirstTab then FirstTab=false;Activate()end
 		
 		local Elements={}
 		
@@ -632,7 +524,7 @@ function Chuddy:CreateWindow(cfg)
 			lbl.ZIndex=2
 			lbl.Parent=f
 			Padding(lbl,0,5,5,0)
-			return{SetText=function(_,t)lbl.Text=t end}
+			return{SetText=function(_,t)lbl.Text=t end,GetText=function()return lbl.Text end}
 		end
 		
 		function Elements:CreateButton(cfg)
@@ -644,8 +536,7 @@ function Chuddy:CreateWindow(cfg)
 			btn.Text=""
 			btn.ZIndex=2
 			btn.Parent=Page
-			Corner(btn,6)
-			Stroke(btn,Theme.Stroke,1)
+			Corner(btn,6)Stroke(btn,Theme.Stroke,1)
 			local lbl=Instance.new("TextLabel")
 			lbl.Text=cfg.Name or"Button"
 			lbl.Size=UDim2.new(1,-60,1,0)
@@ -660,7 +551,7 @@ function Chuddy:CreateWindow(cfg)
 			lbl.Parent=btn
 			local ico=Instance.new("ImageLabel")
 			ico.Size=UDim2.new(0,20,0,20)
-			ico.Position=UDim2.new(1,-30,0.5,-10)
+			ico.Position=UDim2.new(1,-30,.5,-10)
 			ico.BackgroundTransparency=1
 			ico.Image="rbxassetid://10709791437"
 			ico.ImageColor3=Theme.TextDim
@@ -675,11 +566,12 @@ function Chuddy:CreateWindow(cfg)
 				Tween(ico,{ImageColor3=Theme.TextDim})
 			end)
 			btn.MouseButton1Click:Connect(function()
-				Tween(btn,{BackgroundColor3=Theme.Stroke},0.1)
-				task.wait(0.1)
-				Tween(btn,{BackgroundColor3=Theme.Element},0.1)
+				Tween(btn,{BackgroundColor3=Theme.Stroke},.1)
+				task.wait(.1)
+				Tween(btn,{BackgroundColor3=Theme.Element},.1)
 				if cfg.Callback then task.spawn(cfg.Callback)end
 			end)
+			return{SetText=function(_,t)lbl.Text=t end,SetCallback=function(_,c)cfg.Callback=c end,Fire=function()if cfg.Callback then cfg.Callback()end end}
 		end
 		
 		function Elements:CreateToggle(cfg)
@@ -692,8 +584,7 @@ function Chuddy:CreateWindow(cfg)
 			tog.Text=""
 			tog.ZIndex=2
 			tog.Parent=Page
-			Corner(tog,6)
-			Stroke(tog,Theme.Stroke,1)
+			Corner(tog,6)Stroke(tog,Theme.Stroke,1)
 			local lbl=Instance.new("TextLabel")
 			lbl.Text=cfg.Name or"Toggle"
 			lbl.Size=UDim2.new(1,-70,1,0)
@@ -708,7 +599,7 @@ function Chuddy:CreateWindow(cfg)
 			lbl.Parent=tog
 			local sw=Instance.new("Frame")
 			sw.Size=UDim2.new(0,42,0,22)
-			sw.Position=UDim2.new(1,-55,0.5,-11)
+			sw.Position=UDim2.new(1,-55,.5,-11)
 			sw.BackgroundColor3=state and Theme.Accent or Theme.Main
 			sw.BorderSizePixel=0
 			sw.ZIndex=2
@@ -716,7 +607,7 @@ function Chuddy:CreateWindow(cfg)
 			Corner(sw,11)
 			local dot=Instance.new("Frame")
 			dot.Size=UDim2.new(0,18,0,18)
-			dot.Position=state and UDim2.new(1,-20,0.5,-9)or UDim2.new(0,2,0.5,-9)
+			dot.Position=state and UDim2.new(1,-20,.5,-9)or UDim2.new(0,2,.5,-9)
 			dot.BackgroundColor3=Theme.Text
 			dot.BorderSizePixel=0
 			dot.ZIndex=2
@@ -724,17 +615,19 @@ function Chuddy:CreateWindow(cfg)
 			Corner(dot,9)
 			tog.MouseButton1Click:Connect(function()
 				state=not state
-				Tween(sw,{BackgroundColor3=state and Theme.Accent or Theme.Main},0.2)
-				Tween(dot,{Position=state and UDim2.new(1,-20,0.5,-9)or UDim2.new(0,2,0.5,-9)},0.2)
+				Tween(sw,{BackgroundColor3=state and Theme.Accent or Theme.Main},.2)
+				Tween(dot,{Position=state and UDim2.new(1,-20,.5,-9)or UDim2.new(0,2,.5,-9)},.2)
 				if cfg.Callback then task.spawn(cfg.Callback,state)end
 			end)
 			return{
 				SetState=function(_,s)
 					state=s
-					Tween(sw,{BackgroundColor3=state and Theme.Accent or Theme.Main},0.2)
-					Tween(dot,{Position=state and UDim2.new(1,-20,0.5,-9)or UDim2.new(0,2,0.5,-9)},0.2)
+					Tween(sw,{BackgroundColor3=state and Theme.Accent or Theme.Main},.2)
+					Tween(dot,{Position=state and UDim2.new(1,-20,.5,-9)or UDim2.new(0,2,.5,-9)},.2)
 					if cfg.Callback then task.spawn(cfg.Callback,state)end
-				end
+				end,
+				GetState=function()return state end,
+				SetCallback=function(_,c)cfg.Callback=c end
 			}
 		end
 		
@@ -747,8 +640,7 @@ function Chuddy:CreateWindow(cfg)
 			f.BackgroundColor3=Theme.Element
 			f.ZIndex=2
 			f.Parent=Page
-			Corner(f,6)
-			Stroke(f,Theme.Stroke,1)
+			Corner(f,6)Stroke(f,Theme.Stroke,1)
 			local lbl=Instance.new("TextLabel")
 			lbl.Text=cfg.Name or"Slider"
 			lbl.Size=UDim2.new(1,-60,0,20)
@@ -792,16 +684,14 @@ function Chuddy:CreateWindow(cfg)
 			local drag=false
 			local function upd(inp)
 				local pct=math.clamp((inp.Position.X-bar.AbsolutePosition.X)/bar.AbsoluteSize.X,0,1)
-				Tween(fill,{Size=UDim2.new(pct,0,1,0)},0.1)
+				Tween(fill,{Size=UDim2.new(pct,0,1,0)},.1)
 				local nv=math.floor(min+((max-min)*pct))
+				val=nv
 				vLbl.Text=tostring(nv)
 				if cfg.Callback then task.spawn(cfg.Callback,nv)end
 			end
 			bar.InputBegan:Connect(function(i)
-				if i.UserInputType==Enum.UserInputType.MouseButton1 then
-					drag=true
-					upd(i)
-				end
+				if i.UserInputType==Enum.UserInputType.MouseButton1 then drag=true;upd(i)end
 			end)
 			UIS.InputEnded:Connect(function(i)
 				if i.UserInputType==Enum.UserInputType.MouseButton1 then drag=false end
@@ -814,23 +704,24 @@ function Chuddy:CreateWindow(cfg)
 					val=math.clamp(v,min,max)
 					vLbl.Text=tostring(val)
 					local pct=(val-min)/(max-min)
-					Tween(fill,{Size=UDim2.new(pct,0,1,0)},0.2)
+					Tween(fill,{Size=UDim2.new(pct,0,1,0)},.2)
 					if cfg.Callback then task.spawn(cfg.Callback,val)end
-				end
+				end,
+				GetValue=function()return val end,
+				SetCallback=function(_,c)cfg.Callback=c end
 			}
 		end
 		
 		function Elements:CreateKeybind(cfg)
 			cfg=cfg or{}
-			local key=cfg.Default or Enum.KeyCode.F
+			local key=cfg.Default
 			local listen=false
 			local f=Instance.new("Frame")
 			f.Size=UDim2.new(1,0,0,42)
 			f.BackgroundColor3=Theme.Element
 			f.ZIndex=2
 			f.Parent=Page
-			Corner(f,6)
-			Stroke(f,Theme.Stroke,1)
+			Corner(f,6)Stroke(f,Theme.Stroke,1)
 			local lbl=Instance.new("TextLabel")
 			lbl.Text=cfg.Name or"Keybind"
 			lbl.Size=UDim2.new(1,-120,1,0)
@@ -846,7 +737,7 @@ function Chuddy:CreateWindow(cfg)
 			local kBtn=Instance.new("TextButton")
 			kBtn.Text=key and"["..key.Name.."]"or"[NONE]"
 			kBtn.Size=UDim2.new(0,100,0,28)
-			kBtn.Position=UDim2.new(1,-110,0.5,-14)
+			kBtn.Position=UDim2.new(1,-110,.5,-14)
 			kBtn.BackgroundColor3=Theme.Main
 			kBtn.TextColor3=Theme.Accent
 			kBtn.Font=Enum.Font.GothamBold
@@ -878,7 +769,14 @@ function Chuddy:CreateWindow(cfg)
 					end
 				end
 			end)
-			return{SetKey=function(_,k)key=k kBtn.Text=k and"["..k.Name.."]"or"[NONE]"end,GetKey=function()return key end}
+			return{
+				SetKey=function(_,k)
+					key=k
+					kBtn.Text=k and"["..k.Name.."]"or"[NONE]"
+				end,
+				GetKey=function()return key end,
+				SetCallback=function(_,c)cfg.Callback=c end
+			}
 		end
 		
 		function Elements:CreateInput(cfg)
@@ -889,8 +787,7 @@ function Chuddy:CreateWindow(cfg)
 			f.BackgroundColor3=Theme.Element
 			f.ZIndex=2
 			f.Parent=Page
-			Corner(f,6)
-			Stroke(f,Theme.Stroke,1)
+			Corner(f,6)Stroke(f,Theme.Stroke,1)
 			local lbl=Instance.new("TextLabel")
 			lbl.Text=cfg.Name or"Input"
 			lbl.Size=UDim2.new(0,100,1,0)
@@ -907,7 +804,7 @@ function Chuddy:CreateWindow(cfg)
 			box.Text=txt
 			box.PlaceholderText=cfg.Placeholder or"Enter..."
 			box.Size=UDim2.new(1,-130,0,28)
-			box.Position=UDim2.new(0,120,0.5,-14)
+			box.Position=UDim2.new(0,120,.5,-14)
 			box.BackgroundColor3=Theme.Main
 			box.TextColor3=Theme.Text
 			box.PlaceholderColor3=Theme.TextDim
@@ -917,15 +814,15 @@ function Chuddy:CreateWindow(cfg)
 			box.ClearTextOnFocus=false
 			box.ZIndex=2
 			box.Parent=f
-			Corner(box,4)
-			Padding(box,0,10,10,0)
+			Corner(box,4)Padding(box,0,10,10,0)
 			box.FocusLost:Connect(function(e)
 				txt=box.Text
 				if cfg.Callback then task.spawn(cfg.Callback,txt,e)end
 			end)
 			return{
-				SetText=function(_,t)box.Text=t txt=t end,
-				GetText=function()return txt end
+				SetText=function(_,t)box.Text=t;txt=t end,
+				GetText=function()return txt end,
+				SetCallback=function(_,c)cfg.Callback=c end
 			}
 		end
 		
@@ -940,8 +837,7 @@ function Chuddy:CreateWindow(cfg)
 			f.ClipsDescendants=false
 			f.ZIndex=2
 			f.Parent=Page
-			Corner(f,6)
-			Stroke(f,Theme.Stroke,1)
+			Corner(f,6)Stroke(f,Theme.Stroke,1)
 			local lbl=Instance.new("TextLabel")
 			lbl.Text=cfg.Name or"Dropdown"
 			lbl.Size=UDim2.new(0,120,1,0)
@@ -957,7 +853,7 @@ function Chuddy:CreateWindow(cfg)
 			local sBtn=Instance.new("TextButton")
 			sBtn.Text=sel
 			sBtn.Size=UDim2.new(1,-145,0,28)
-			sBtn.Position=UDim2.new(0,130,0.5,-14)
+			sBtn.Position=UDim2.new(0,130,.5,-14)
 			sBtn.BackgroundColor3=Theme.Main
 			sBtn.TextColor3=Theme.Accent
 			sBtn.Font=Enum.Font.Gotham
@@ -967,11 +863,10 @@ function Chuddy:CreateWindow(cfg)
 			sBtn.TextTruncate=Enum.TextTruncate.AtEnd
 			sBtn.ZIndex=2
 			sBtn.Parent=f
-			Corner(sBtn,4)
-			Padding(sBtn,0,10,30,0)
+			Corner(sBtn,4)Padding(sBtn,0,10,30,0)
 			local arr=Instance.new("ImageLabel")
 			arr.Size=UDim2.new(0,16,0,16)
-			arr.Position=UDim2.new(1,-22,0.5,-8)
+			arr.Position=UDim2.new(1,-22,.5,-8)
 			arr.BackgroundTransparency=1
 			arr.Image=Icons.Dropdown
 			arr.ImageColor3=Theme.TextDim
@@ -989,10 +884,9 @@ function Chuddy:CreateWindow(cfg)
 			optF.ScrollBarImageColor3=Theme.Stroke
 			optF.AutomaticCanvasSize=Enum.AutomaticSize.Y
 			optF.CanvasSize=UDim2.new(0,0,0,0)
-			optF.ZIndex=10
+			optF.ZIndex=100
 			optF.Parent=f
-			Corner(optF,4)
-			Stroke(optF,Theme.Stroke,1)
+			Corner(optF,4)Stroke(optF,Theme.Stroke,1)
 			local optL=Instance.new("UIListLayout")
 			optL.SortOrder=Enum.SortOrder.LayoutOrder
 			optL.Padding=UDim.new(0,2)
@@ -1008,19 +902,18 @@ function Chuddy:CreateWindow(cfg)
 				ob.TextSize=12
 				ob.TextXAlignment=Enum.TextXAlignment.Left
 				ob.AutoButtonColor=false
-				ob.ZIndex=10
+				ob.ZIndex=100
 				ob.Parent=optF
-				Corner(ob,4)
-				Padding(ob,0,8,8,0)
+				Corner(ob,4)Padding(ob,0,8,8,0)
 				ob.MouseEnter:Connect(function()Tween(ob,{BackgroundColor3=Theme.ElementHover})end)
 				ob.MouseLeave:Connect(function()Tween(ob,{BackgroundColor3=Theme.Main})end)
 				ob.MouseButton1Click:Connect(function()
 					sel=o
 					sBtn.Text=o
 					open=false
-					Tween(optF,{Size=UDim2.new(1,-145,0,0)},0.2)
-					Tween(arr,{Rotation=0},0.2)
-					task.wait(0.2)
+					Tween(optF,{Size=UDim2.new(1,-145,0,0)},.2)
+					Tween(arr,{Rotation=0},.2)
+					task.wait(.2)
 					optF.Visible=false
 					if cfg.Callback then task.spawn(cfg.Callback,o)end
 				end)
@@ -1031,12 +924,12 @@ function Chuddy:CreateWindow(cfg)
 				if open then
 					optF.Visible=true
 					local h=math.min(#opts*30+8,150)
-					Tween(optF,{Size=UDim2.new(1,-145,0,h)},0.2)
-					Tween(arr,{Rotation=180},0.2)
+					Tween(optF,{Size=UDim2.new(1,-145,0,h)},.2)
+					Tween(arr,{Rotation=180},.2)
 				else
-					Tween(optF,{Size=UDim2.new(1,-145,0,0)},0.2)
-					Tween(arr,{Rotation=0},0.2)
-					task.wait(0.2)
+					Tween(optF,{Size=UDim2.new(1,-145,0,0)},.2)
+					Tween(arr,{Rotation=0},.2)
+					task.wait(.2)
 					optF.Visible=false
 				end
 			end)
@@ -1055,11 +948,9 @@ function Chuddy:CreateWindow(cfg)
 						if c:IsA("TextButton")then c:Destroy()end
 					end
 					for _,o in ipairs(opts)do makeOpt(o)end
-					if #opts>0 then
-						sel=opts[1]
-						sBtn.Text=sel
-					end
-				end
+					if #opts>0 then sel=opts[1];sBtn.Text=sel end
+				end,
+				SetCallback=function(_,c)cfg.Callback=c end
 			}
 		end
 		
@@ -1072,183 +963,119 @@ function Chuddy:CreateWindow(cfg)
 		end
 	end)
 	
-	if EnablePlayerTab and not UniversalTabCreated then
-		UniversalTabCreated=true
-		local Universal=Tabs:CreateTab("Universal",Icons.User)
+	if EnablePlayerTab and not PlayerTabCreated then
+		PlayerTabCreated=true
+		local Player=Tabs:CreateTab("Player",Icons.User)
 		
-		Universal:CreateSection("Movement")
+		Player:CreateSection("Movement")
 		
-		local wsEnabled=false
-		local wsValue=16
-		local wsMethod="Heartbeat"
-		Universal:CreateToggle({Name="Custom WalkSpeed",Default=false,Callback=function(s)
+		local wsEnabled,wsValue,wsMethod=false,16,"Heartbeat"
+		Player:CreateToggle({Name="Custom WalkSpeed",Default=false,Callback=function(s)
 			wsEnabled=s
 			if s then
-				if wsMethod=="Heartbeat"then
-					Connections.WS=RS.Heartbeat:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.WalkSpeed=wsValue
-						end
-					end)
-				elseif wsMethod=="RenderStepped"then
-					Connections.WS=RS.RenderStepped:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.WalkSpeed=wsValue
-						end
-					end)
-				elseif wsMethod=="Stepped"then
-					Connections.WS=RS.Stepped:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.WalkSpeed=wsValue
-						end
-					end)
-				end
+				if Connections.WS then Connections.WS:Disconnect()end
+				Connections.WS=RS[wsMethod]:Connect(function()
+					if LP.Character and LP.Character:FindFirstChild("Humanoid")then
+						LP.Character.Humanoid.WalkSpeed=wsValue
+					end
+				end)
 			else
-				if Connections.WS then Connections.WS:Disconnect()Connections.WS=nil end
+				if Connections.WS then Connections.WS:Disconnect();Connections.WS=nil end
 				if LP.Character and LP.Character:FindFirstChild("Humanoid")then
 					LP.Character.Humanoid.WalkSpeed=16
 				end
 			end
 		end})
 		
-		Universal:CreateSlider({Name="WalkSpeed Value",Min=16,Max=500,Default=16,Callback=function(v)wsValue=v end})
-		Universal:CreateDropdown({Name="WS Method",Options={"Heartbeat","RenderStepped","Stepped"},Default="Heartbeat",Callback=function(v)
+		Player:CreateSlider({Name="WalkSpeed Value",Min=16,Max=500,Default=16,Callback=function(v)wsValue=v end})
+		Player:CreateDropdown({Name="WS Method",Options={"Heartbeat","RenderStepped","Stepped"},Default="Heartbeat",Callback=function(v)
 			wsMethod=v
 			if wsEnabled then
 				if Connections.WS then Connections.WS:Disconnect()end
-				if v=="Heartbeat"then
-					Connections.WS=RS.Heartbeat:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.WalkSpeed=wsValue
-						end
-					end)
-				elseif v=="RenderStepped"then
-					Connections.WS=RS.RenderStepped:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.WalkSpeed=wsValue
-						end
-					end)
-				elseif v=="Stepped"then
-					Connections.WS=RS.Stepped:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.WalkSpeed=wsValue
-						end
-					end)
-				end
+				Connections.WS=RS[wsMethod]:Connect(function()
+					if LP.Character and LP.Character:FindFirstChild("Humanoid")then
+						LP.Character.Humanoid.WalkSpeed=wsValue
+					end
+				end)
 			end
 		end})
 		
-		local jpEnabled=false
-		local jpValue=50
-		local jpMethod="Heartbeat"
-		Universal:CreateToggle({Name="Custom JumpPower",Default=false,Callback=function(s)
+		local jpEnabled,jpValue,jpMethod=false,50,"Heartbeat"
+		Player:CreateToggle({Name="Custom JumpPower",Default=false,Callback=function(s)
 			jpEnabled=s
 			if s then
-				if jpMethod=="Heartbeat"then
-					Connections.JP=RS.Heartbeat:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.UseJumpPower=true
-							LP.Character.Humanoid.JumpPower=jpValue
-						end
-					end)
-				elseif jpMethod=="RenderStepped"then
-					Connections.JP=RS.RenderStepped:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.UseJumpPower=true
-							LP.Character.Humanoid.JumpPower=jpValue
-						end
-					end)
-				elseif jpMethod=="Stepped"then
-					Connections.JP=RS.Stepped:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.UseJumpPower=true
-							LP.Character.Humanoid.JumpPower=jpValue
-						end
-					end)
-				end
+				if Connections.JP then Connections.JP:Disconnect()end
+				Connections.JP=RS[jpMethod]:Connect(function()
+					if LP.Character and LP.Character:FindFirstChild("Humanoid")then
+						LP.Character.Humanoid.UseJumpPower=true
+						LP.Character.Humanoid.JumpPower=jpValue
+					end
+				end)
 			else
-				if Connections.JP then Connections.JP:Disconnect()Connections.JP=nil end
+				if Connections.JP then Connections.JP:Disconnect();Connections.JP=nil end
 				if LP.Character and LP.Character:FindFirstChild("Humanoid")then
 					LP.Character.Humanoid.JumpPower=50
 				end
 			end
 		end})
 		
-		Universal:CreateSlider({Name="JumpPower Value",Min=50,Max=500,Default=50,Callback=function(v)jpValue=v end})
-		Universal:CreateDropdown({Name="JP Method",Options={"Heartbeat","RenderStepped","Stepped"},Default="Heartbeat",Callback=function(v)
+		Player:CreateSlider({Name="JumpPower Value",Min=50,Max=500,Default=50,Callback=function(v)jpValue=v end})
+		Player:CreateDropdown({Name="JP Method",Options={"Heartbeat","RenderStepped","Stepped"},Default="Heartbeat",Callback=function(v)
 			jpMethod=v
 			if jpEnabled then
 				if Connections.JP then Connections.JP:Disconnect()end
-				if v=="Heartbeat"then
-					Connections.JP=RS.Heartbeat:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.UseJumpPower=true
-							LP.Character.Humanoid.JumpPower=jpValue
-						end
-					end)
-				elseif v=="RenderStepped"then
-					Connections.JP=RS.RenderStepped:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.UseJumpPower=true
-							LP.Character.Humanoid.JumpPower=jpValue
-						end
-					end)
-				elseif v=="Stepped"then
-					Connections.JP=RS.Stepped:Connect(function()
-						if LP.Character and LP.Character:FindFirstChild("Humanoid")then
-							LP.Character.Humanoid.UseJumpPower=true
-							LP.Character.Humanoid.JumpPower=jpValue
-						end
-					end)
-				end
+				Connections.JP=RS[jpMethod]:Connect(function()
+					if LP.Character and LP.Character:FindFirstChild("Humanoid")then
+						LP.Character.Humanoid.UseJumpPower=true
+						LP.Character.Humanoid.JumpPower=jpValue
+					end
+				end)
 			end
 		end})
 		
-		Universal:CreateSection("Flight")
+		Player:CreateSection("Flight")
 		
-		local flySpeed=50
-		local flyKey=Enum.KeyCode.E
-		local flying=false
-		
-		Universal:CreateKeybind({Name="Fly Toggle",Default=Enum.KeyCode.E,Callback=function(k)
-			if flyKey and Connections.FlyKey then
-				Connections.FlyKey:Disconnect()
-			end
+		local flying,flySpeed,flyKey=false,50,nil
+		Player:CreateKeybind({Name="Fly Toggle",Default=nil,Callback=function(k)
+			if flyKey and Connections.FlyKey then Connections.FlyKey:Disconnect()end
 			flyKey=k
 			if k then
 				Connections.FlyKey=UIS.InputBegan:Connect(function(inp,gpe)
 					if not gpe and inp.KeyCode==flyKey then
 						flying=not flying
+						local chr=LP.Character
+						if not chr then return end
+						local hrp=chr:FindFirstChild("HumanoidRootPart")
+						if not hrp then return end
+						
 						if flying then
-							local hrp=LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
-							if hrp then
-								local bg=Instance.new("BodyGyro")
-								bg.MaxTorque=Vector3.new(9e9,9e9,9e9)
-								bg.P=9e9
-								bg.Parent=hrp
-								local bv=Instance.new("BodyVelocity")
-								bv.MaxForce=Vector3.new(9e9,9e9,9e9)
-								bv.Velocity=Vector3.zero
-								bv.Parent=hrp
-								Connections.Fly=RS.Heartbeat:Connect(function()
-									if not flying or not LP.Character or not hrp.Parent then
-										if bg then bg:Destroy()end
-										if bv then bv:Destroy()end
-										if Connections.Fly then Connections.Fly:Disconnect()end
-										return
-									end
-									local cam=workspace.CurrentCamera
-									bg.CFrame=cam.CFrame
-									local vel=Vector3.zero
-									if UIS:IsKeyDown(Enum.KeyCode.W)then vel=vel+cam.CFrame.LookVector*flySpeed end
-									if UIS:IsKeyDown(Enum.KeyCode.S)then vel=vel-cam.CFrame.LookVector*flySpeed end
-									if UIS:IsKeyDown(Enum.KeyCode.A)then vel=vel-cam.CFrame.RightVector*flySpeed end
-									if UIS:IsKeyDown(Enum.KeyCode.D)then vel=vel+cam.CFrame.RightVector*flySpeed end
-									if UIS:IsKeyDown(Enum.KeyCode.Space)then vel=vel+Vector3.new(0,flySpeed,0)end
-									if UIS:IsKeyDown(Enum.KeyCode.LeftShift)then vel=vel-Vector3.new(0,flySpeed,0)end
-									bv.Velocity=vel
-								end)
-							end
+							local BG=Instance.new("BodyGyro")
+							local BV=Instance.new("BodyVelocity")
+							BG.P=9e4
+							BG.maxTorque=Vector3.new(9e9,9e9,9e9)
+							BG.cframe=hrp.CFrame
+							BV.velocity=Vector3.zero
+							BV.maxForce=Vector3.new(9e9,9e9,9e9)
+							BG.Parent=hrp
+							BV.Parent=hrp
+							Connections.Fly=RS.Heartbeat:Connect(function()
+								if not flying or not chr or not hrp or not hrp.Parent then
+									if BG then BG:Destroy()end
+									if BV then BV:Destroy()end
+									if Connections.Fly then Connections.Fly:Disconnect()end
+									return
+								end
+								local cam=workspace.CurrentCamera
+								BG.cframe=cam.CFrame
+								local vel=Vector3.zero
+								if UIS:IsKeyDown(Enum.KeyCode.W)then vel=vel+(cam.CFrame.LookVector*flySpeed)end
+								if UIS:IsKeyDown(Enum.KeyCode.S)then vel=vel-(cam.CFrame.LookVector*flySpeed)end
+								if UIS:IsKeyDown(Enum.KeyCode.D)then vel=vel+(cam.CFrame.RightVector*flySpeed)end
+								if UIS:IsKeyDown(Enum.KeyCode.A)then vel=vel-(cam.CFrame.RightVector*flySpeed)end
+								if UIS:IsKeyDown(Enum.KeyCode.Space)then vel=vel+Vector3.new(0,flySpeed,0)end
+								if UIS:IsKeyDown(Enum.KeyCode.LeftShift)or UIS:IsKeyDown(Enum.KeyCode.LeftControl)then vel=vel-Vector3.new(0,flySpeed,0)end
+								BV.velocity=vel
+							end)
 						else
 							if Connections.Fly then Connections.Fly:Disconnect()end
 						end
@@ -1257,16 +1084,65 @@ function Chuddy:CreateWindow(cfg)
 			end
 		end})
 		
-		Universal:CreateSlider({Name="Fly Speed",Min=10,Max=200,Default=50,Callback=function(v)flySpeed=v end})
+		Player:CreateSlider({Name="Fly Speed",Min=10,Max=200,Default=50,Callback=function(v)flySpeed=v end})
 		
-		Universal:CreateSection("Click TP")
-		
-		local ctpKey=Enum.KeyCode.LeftControl
-		
-		Universal:CreateKeybind({Name="Click TP Key",Default=Enum.KeyCode.LeftControl,Callback=function(k)
-			if ctpKey and Connections.CtpKey then
-				Connections.CtpKey:Disconnect()
+		local vflying,vflyKey=false,nil
+		Player:CreateKeybind({Name="Vehicle Fly Toggle",Default=nil,Callback=function(k)
+			if vflyKey and Connections.VFlyKey then Connections.VFlyKey:Disconnect()end
+			vflyKey=k
+			if k then
+				Connections.VFlyKey=UIS.InputBegan:Connect(function(inp,gpe)
+					if not gpe and inp.KeyCode==vflyKey then
+						vflying=not vflying
+						local chr=LP.Character
+						if not chr then return end
+						local hrp=chr:FindFirstChild("HumanoidRootPart")
+						if not hrp or not hrp.Parent:FindFirstChildOfClass("Humanoid")or not hrp.Parent:FindFirstChildOfClass("Humanoid").SeatPart then return end
+						
+						if vflying then
+							local seat=hrp.Parent:FindFirstChildOfClass("Humanoid").SeatPart
+							local veh=seat:FindFirstAncestorOfClass("Model")
+							if not veh or not veh.PrimaryPart then return end
+							local BG=Instance.new("BodyGyro")
+							local BV=Instance.new("BodyVelocity")
+							BG.P=9e4
+							BG.maxTorque=Vector3.new(9e9,9e9,9e9)
+							BG.cframe=veh.PrimaryPart.CFrame
+							BV.velocity=Vector3.zero
+							BV.maxForce=Vector3.new(9e9,9e9,9e9)
+							BG.Parent=veh.PrimaryPart
+							BV.Parent=veh.PrimaryPart
+							Connections.VFly=RS.Heartbeat:Connect(function()
+								if not vflying or not veh or not veh.PrimaryPart or not veh.PrimaryPart.Parent then
+									if BG then BG:Destroy()end
+									if BV then BV:Destroy()end
+									if Connections.VFly then Connections.VFly:Disconnect()end
+									return
+								end
+								local cam=workspace.CurrentCamera
+								BG.cframe=cam.CFrame
+								local vel=Vector3.zero
+								if UIS:IsKeyDown(Enum.KeyCode.W)then vel=vel+(cam.CFrame.LookVector*flySpeed)end
+								if UIS:IsKeyDown(Enum.KeyCode.S)then vel=vel-(cam.CFrame.LookVector*flySpeed)end
+								if UIS:IsKeyDown(Enum.KeyCode.D)then vel=vel+(cam.CFrame.RightVector*flySpeed)end
+								if UIS:IsKeyDown(Enum.KeyCode.A)then vel=vel-(cam.CFrame.RightVector*flySpeed)end
+								if UIS:IsKeyDown(Enum.KeyCode.Space)then vel=vel+Vector3.new(0,flySpeed,0)end
+								if UIS:IsKeyDown(Enum.KeyCode.LeftShift)or UIS:IsKeyDown(Enum.KeyCode.LeftControl)then vel=vel-Vector3.new(0,flySpeed,0)end
+								BV.velocity=vel
+							end)
+						else
+							if Connections.VFly then Connections.VFly:Disconnect()end
+						end
+					end
+				end)
 			end
+		end})
+		
+		Player:CreateSection("Click TP")
+		
+		local ctpKey=nil
+		Player:CreateKeybind({Name="Click TP Key",Default=nil,Callback=function(k)
+			if ctpKey and Connections.CtpKey then Connections.CtpKey:Disconnect()end
 			ctpKey=k
 			if k then
 				Connections.CtpKey=UIS.InputBegan:Connect(function(inp,gpe)
@@ -1283,47 +1159,39 @@ function Chuddy:CreateWindow(cfg)
 			end
 		end})
 		
-		Universal:CreateSection("Character")
+		Player:CreateSection("Character")
 		
-		Universal:CreateButton({Name="Reset Character",Callback=function()
+		Player:CreateButton({Name="Reset Character",Callback=function()
 			if LP.Character and LP.Character:FindFirstChild("Humanoid")then
 				LP.Character.Humanoid.Health=0
 			end
 		end})
 		
 		local invisParts={}
-		Universal:CreateToggle({Name="Invisibility",Default=false,Callback=function(s)
+		Player:CreateToggle({Name="Invisibility",Default=false,Callback=function(s)
 			if s then
 				if LP.Character then
 					for _,v in pairs(LP.Character:GetDescendants())do
-						if v:IsA("BasePart")and v.Name~="HumanoidRootPart"then
+						if v:IsA("BasePart")then
 							invisParts[v]=v.Transparency
 							v.Transparency=1
-						elseif v:IsA("Accessory")and v:FindFirstChild("Handle")then
-							invisParts[v.Handle]=v.Handle.Transparency
-							v.Handle.Transparency=1
+						elseif v:IsA("Decal")then
+							invisParts[v]=v.Transparency
+							v.Transparency=1
 						end
-					end
-					if LP.Character:FindFirstChild("Head")and LP.Character.Head:FindFirstChild("face")then
-						invisParts[LP.Character.Head.face]=LP.Character.Head.face.Transparency
-						LP.Character.Head.face.Transparency=1
 					end
 				end
 			else
-				if LP.Character then
-					for part,trans in pairs(invisParts)do
-						if part and part.Parent then
-							part.Transparency=trans
-						end
+				for part,trans in pairs(invisParts)do
+					if part and part.Parent then
+						part.Transparency=trans
 					end
-					invisParts={}
 				end
+				invisParts={}
 			end
 		end})
 		
-		local flingEnabled=false
-		Universal:CreateToggle({Name="Fling",Default=false,Callback=function(s)
-			flingEnabled=s
+		Player:CreateToggle({Name="Fling",Default=false,Callback=function(s)
 			if s then
 				if LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")then
 					local hrp=LP.Character.HumanoidRootPart
@@ -1336,37 +1204,34 @@ function Chuddy:CreateWindow(cfg)
 					Connections.Fling=bamFling
 				end
 			else
-				if Connections.Fling then
-					Connections.Fling:Destroy()
-					Connections.Fling=nil
-				end
+				if Connections.Fling then Connections.Fling:Destroy();Connections.Fling=nil end
 			end
 		end})
 		
-		Universal:CreateSection("World")
+		Player:CreateSection("World")
 		
-		Universal:CreateButton({Name="Fullbright",Callback=function()
+		Player:CreateButton({Name="Fullbright",Callback=function()
 			Lighting.Brightness=2
 			Lighting.Ambient=Color3.new(1,1,1)
 		end})
 		
-		Universal:CreateButton({Name="Remove Fog",Callback=function()
+		Player:CreateButton({Name="Remove Fog",Callback=function()
 			Lighting.FogEnd=999999
 		end})
 		
-		Universal:CreateButton({Name="Fix Lighting",Callback=function()
+		Player:CreateButton({Name="Fix Lighting",Callback=function()
 			Lighting.Brightness=1
-			Lighting.Ambient=Color3.new(0.5,0.5,0.5)
+			Lighting.Ambient=Color3.new(.5,.5,.5)
 			Lighting.FogEnd=100000
 		end})
 		
-		Universal:CreateSection("Server")
+		Player:CreateSection("Server")
 		
-		Universal:CreateButton({Name="Rejoin Server",Callback=function()
+		Player:CreateButton({Name="Rejoin Server",Callback=function()
 			TeleportService:TeleportToPlaceInstance(game.PlaceId,game.JobId)
 		end})
 		
-		Universal:CreateButton({Name="Server Hop",Callback=function()
+		Player:CreateButton({Name="Server Hop",Callback=function()
 			local servers={}
 			local success,result=pcall(function()
 				return game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100")
@@ -1392,7 +1257,7 @@ function Chuddy:CreateWindow(cfg)
 	SettingsPage.BorderSizePixel=0
 	SettingsPage.ScrollBarThickness=4
 	SettingsPage.ScrollBarImageColor3=Theme.Stroke
-	SettingsPage.ScrollBarImageTransparency=0.3
+	SettingsPage.ScrollBarImageTransparency=.3
 	SettingsPage.AutomaticCanvasSize=Enum.AutomaticSize.Y
 	SettingsPage.CanvasSize=UDim2.new(0,0,0,0)
 	SettingsPage.Visible=false
@@ -1426,8 +1291,7 @@ function Chuddy:CreateWindow(cfg)
 		b.Text=""
 		b.ZIndex=2
 		b.Parent=SettingsPage
-		Corner(b,6)
-		Stroke(b,Theme.Stroke,1)
+		Corner(b,6)Stroke(b,Theme.Stroke,1)
 		local l=Instance.new("TextLabel")
 		l.Text=n
 		l.Size=UDim2.new(1,-20,1,0)
@@ -1452,8 +1316,7 @@ function Chuddy:CreateWindow(cfg)
 	kbF.BackgroundColor3=Theme.Element
 	kbF.ZIndex=2
 	kbF.Parent=SettingsPage
-	Corner(kbF,6)
-	Stroke(kbF,Theme.Stroke,1)
+	Corner(kbF,6)Stroke(kbF,Theme.Stroke,1)
 	local kbL=Instance.new("TextLabel")
 	kbL.Text="Toggle Keybind"
 	kbL.Size=UDim2.new(1,-120,1,0)
@@ -1468,7 +1331,7 @@ function Chuddy:CreateWindow(cfg)
 	local kbBtn=Instance.new("TextButton")
 	kbBtn.Text="["..Keybind.Name.."]"
 	kbBtn.Size=UDim2.new(0,100,0,26)
-	kbBtn.Position=UDim2.new(1,-110,0.5,-13)
+	kbBtn.Position=UDim2.new(1,-110,.5,-13)
 	kbBtn.BackgroundColor3=Theme.Main
 	kbBtn.TextColor3=Theme.Accent
 	kbBtn.Font=Enum.Font.GothamBold
@@ -1502,7 +1365,7 @@ function Chuddy:CreateWindow(cfg)
 	SSec("Theme Management")
 	
 	SBtn("Export Current Theme",function(l)
-		setclipboard(ExportTheme())
+		setclipboard(Http:JSONEncode(Theme))
 		l.Text="✓ Copied!"
 		task.wait(2)
 		l.Text="Export Current Theme"
@@ -1511,11 +1374,9 @@ function Chuddy:CreateWindow(cfg)
 	SSec("Config Management")
 	
 	SBtn("Unload Hub",function()
-		for _,c in pairs(Connections)do
-			if c and c.Disconnect then c:Disconnect()end
-		end
-		Tween(Main,{Size=UDim2.new(0,0,0,0)},0.3)
-		task.wait(0.3)
+		for _,c in pairs(Connections)do if c and c.Disconnect then c:Disconnect()end end
+		Tween(Main,{Size=UDim2.new(0,0,0,0)},.3)
+		task.wait(.3)
 		SGui:Destroy()
 	end)
 	
@@ -1532,7 +1393,7 @@ function Chuddy:CreateWindow(cfg)
 	local sIco=Instance.new("ImageLabel")
 	sIco.Name="Icon"
 	sIco.Size=UDim2.new(0,18,0,18)
-	sIco.Position=UDim2.new(0,12,0.5,-9)
+	sIco.Position=UDim2.new(0,12,.5,-9)
 	sIco.BackgroundTransparency=1
 	sIco.Image=Icons.Settings
 	sIco.ImageColor3=Theme.TextDim
@@ -1550,7 +1411,7 @@ function Chuddy:CreateWindow(cfg)
 	sLbl.Parent=SettingsBtn
 	SettingsBtn.MouseEnter:Connect(function()
 		if ActiveTab~="Settings"then
-			Tween(SettingsBtn,{BackgroundColor3=Theme.Element,BackgroundTransparency=0.5})
+			Tween(SettingsBtn,{BackgroundColor3=Theme.Element,BackgroundTransparency=.5})
 		end
 	end)
 	SettingsBtn.MouseLeave:Connect(function()
