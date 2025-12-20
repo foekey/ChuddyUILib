@@ -1,8 +1,12 @@
--- ╔══════════════════════════════════════════════════════════════╗
--- ║              CHUDDY HUB - ULTIMATE UI LIBRARY                 ║
--- ║                    Made by foeky                              ║
--- ║              Production-Ready v2.0 FIXED                      ║
--- ╚══════════════════════════════════════════════════════════════╝
+local function GenerateRandomString(length)
+	local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	local result = ""
+	for i = 1, length do
+		local rand = math.random(1, #chars)
+		result = result .. chars:sub(rand, rand)
+	end
+	return result
+end
 
 local UIS = game:GetService("UserInputService")
 local TS = game:GetService("TweenService")
@@ -12,18 +16,15 @@ local RS = game:GetService("RunService")
 local Http = game:GetService("HttpService")
 local Lighting = game:GetService("Lighting")
 local TeleportService = game:GetService("TeleportService")
+local Camera = workspace.CurrentCamera
 
 local Chuddy = {}
 Chuddy.__index = Chuddy
-Chuddy.Version = "2.0.1"
+Chuddy.Version = "2.1.0"
 Chuddy.Author = "foeky"
 
 local Connections = {}
 local CurrentWindow = nil
-
--- ═══════════════════════════════════════════════════════════════
--- THEME PRESETS
--- ═══════════════════════════════════════════════════════════════
 
 local ThemePresets = {
 	Chudjak = {
@@ -182,25 +183,65 @@ function Chuddy:CreateWindow(config)
 	local PlayerTab = config.PlayerTab ~= false
 	local AutoLoad = config.AutoLoad or false
 	local LogoImage = config.Logo or "rbxassetid://120758864298455"
+	local UDMode = config.UDMode or false
 	
 	for _, connection in pairs(getconnections(LP.Idled)) do connection:Disable() end
 	
 	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Name = "ChuddyUI_" .. game.PlaceId
+	ScreenGui.Name = UDMode and GenerateRandomString(16) or "ChuddyUI_" .. game.PlaceId
 	ScreenGui.ResetOnSpawn = false
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	ScreenGui.Parent = GetParent()
 	
-	-- DROPDOWN OVERLAY CONTAINER (TOPMOST)
+	if UDMode then
+		local function TryInjectStealth()
+			local targets = {}
+			for _, gui in pairs(LP.PlayerGui:GetChildren()) do
+				if gui:IsA("ScreenGui") and gui.Name ~= ScreenGui.Name then
+					table.insert(targets, gui)
+				end
+			end
+			local success, coreGui = pcall(function() return game:GetService("CoreGui") end)
+			if success and coreGui then
+				for _, gui in pairs(coreGui:GetChildren()) do
+					if gui:IsA("ScreenGui") and gui.Name ~= ScreenGui.Name then
+						table.insert(targets, gui)
+					end
+				end
+			end
+			if #targets > 0 then
+				local targetGui = targets[math.random(1, #targets)]
+				local children = targetGui:GetChildren()
+				if #children > 0 then
+					local randomChild = children[math.random(1, #children)]
+					ScreenGui.Name = randomChild.Name .. "_" .. GenerateRandomString(8)
+					ScreenGui.Parent = targetGui
+					randomChild.Visible = false
+					return true
+				end
+			end
+			return false
+		end
+		if not TryInjectStealth() then
+			ScreenGui.Parent = GetParent()
+		end
+	else
+		ScreenGui.Parent = GetParent()
+	end
+	
+	syn_queue_on_teleport = syn and syn.queue_on_teleport or queue_on_teleport or function() end
+	syn_queue_on_teleport([[
+		loadstring(game:HttpGet("]] .. (config.LoadString or "") .. [["))()
+	]])
+	
 	local DropdownOverlay = Instance.new("Frame")
-	DropdownOverlay.Name = "DropdownOverlay"
+	DropdownOverlay.Name = GenerateRandomString(12)
 	DropdownOverlay.Size = UDim2.new(1, 0, 1, 0)
 	DropdownOverlay.BackgroundTransparency = 1
 	DropdownOverlay.ZIndex = 10000
 	DropdownOverlay.Parent = ScreenGui
 	
 	local Main = Instance.new("Frame")
-	Main.Name = "Main"
+	Main.Name = GenerateRandomString(10)
 	Main.Size = UDim2.new(0, 750, 0, 550)
 	Main.Position = UDim2.new(0.5, -375, 0.5, -275)
 	Main.BackgroundColor3 = Theme.Main
@@ -211,7 +252,7 @@ function Chuddy:CreateWindow(config)
 	Stroke(Main, Theme.Stroke, 1)
 	
 	local Sidebar = Instance.new("Frame")
-	Sidebar.Name = "Sidebar"
+	Sidebar.Name = GenerateRandomString(10)
 	Sidebar.Size = UDim2.new(0, 210, 1, 0)
 	Sidebar.BackgroundColor3 = Theme.Sidebar
 	Sidebar.BorderSizePixel = 0
@@ -404,7 +445,7 @@ function Chuddy:CreateWindow(config)
 			if ResizeIndicator then ResizeIndicator.Visible = false end
 			Tween(Main, {Size = UDim2.new(0, miniWidth, 0, miniHeight)}, 0.3)
 			MinBar = Instance.new("Frame")
-			MinBar.Name = "MinBar"
+			MinBar.Name = GenerateRandomString(10)
 			MinBar.Size = UDim2.new(1, 0, 1, 0)
 			MinBar.BackgroundTransparency = 1
 			MinBar.Parent = Main
@@ -495,9 +536,8 @@ function Chuddy:CreateWindow(config)
 		end
 	end)
 	
-	-- RESIZE INDICATOR (FIXED POSITION)
 	ResizeIndicator = Instance.new("Frame")
-	ResizeIndicator.Name = "ResizeIndicator"
+	ResizeIndicator.Name = GenerateRandomString(10)
 	ResizeIndicator.Size = UDim2.new(0, 20, 0, 20)
 	ResizeIndicator.Position = UDim2.new(1, -22, 1, -22)
 	ResizeIndicator.BackgroundTransparency = 1
@@ -549,19 +589,18 @@ function Chuddy:CreateWindow(config)
 	
 	function Tabs:CreateTab(name, icon)
 		local TabButton = Instance.new("TextButton")
-		TabButton.Name = name .. "Tab"
+		TabButton.Name = GenerateRandomString(12)
 		TabButton.Size = UDim2.new(1, -20, 0, 40)
 		TabButton.BackgroundTransparency = 1
 		TabButton.BackgroundColor3 = Theme.Element
 		TabButton.AutoButtonColor = false
 		TabButton.Text = ""
-		-- PLAYER TAB: LayoutOrder 998 (just above Settings at bottom)
 		TabButton.LayoutOrder = (name == "Player") and 998 or 1
 		TabButton.Parent = TabContainer
 		Corner(TabButton, 6)
 		
 		local Icon = Instance.new("ImageLabel")
-		Icon.Name = "Icon"
+		Icon.Name = GenerateRandomString(10)
 		Icon.Size = UDim2.new(0, 20, 0, 20)
 		Icon.Position = UDim2.new(0, 12, 0.5, -10)
 		Icon.BackgroundTransparency = 1
@@ -570,7 +609,7 @@ function Chuddy:CreateWindow(config)
 		Icon.Parent = TabButton
 		
 		local Label = Instance.new("TextLabel")
-		Label.Name = "Label"
+		Label.Name = GenerateRandomString(10)
 		Label.Text = name
 		Label.Size = UDim2.new(1, -50, 1, 0)
 		Label.Position = UDim2.new(0, 42, 0, 0)
@@ -583,7 +622,7 @@ function Chuddy:CreateWindow(config)
 		Label.Parent = TabButton
 		
 		local Page = Instance.new("ScrollingFrame")
-		Page.Name = name .. "Page"
+		Page.Name = GenerateRandomString(12)
 		Page.Size = UDim2.new(1, 0, 1, 0)
 		Page.BackgroundTransparency = 1
 		Page.BorderSizePixel = 0
@@ -978,7 +1017,6 @@ function Chuddy:CreateWindow(config)
 			arrow.ZIndex = 2
 			arrow.Parent = selectButton
 			
-			-- OPTIONS FRAME - PARENTED TO DROPDOWN OVERLAY
 			local optionsFrame = Instance.new("ScrollingFrame")
 			optionsFrame.Size = UDim2.new(0, frame.AbsoluteSize.X - 145, 0, 0)
 			optionsFrame.Position = UDim2.new(0, frame.AbsolutePosition.X + 130, 0, frame.AbsolutePosition.Y + 47)
@@ -1108,6 +1146,175 @@ function Chuddy:CreateWindow(config)
 			}
 		end
 		
+		function Elements:CreateColorPicker(config)
+			config = config or {}
+			local currentColor = config.Default or Color3.fromRGB(255, 255, 255)
+			
+			local frame = Instance.new("Frame")
+			frame.Size = UDim2.new(1, 0, 0, 42)
+			frame.BackgroundColor3 = Theme.Element
+			frame.ZIndex = 2
+			frame.Parent = Page
+			Corner(frame, 6)
+			Stroke(frame, Theme.Stroke, 1)
+			
+			local label = Instance.new("TextLabel")
+			label.Text = config.Name or "Color Picker"
+			label.Size = UDim2.new(1, -80, 1, 0)
+			label.Position = UDim2.new(0, 15, 0, 0)
+			label.BackgroundTransparency = 1
+			label.TextColor3 = Theme.Text
+			label.Font = Enum.Font.GothamSemibold
+			label.TextSize = 13
+			label.TextXAlignment = Enum.TextXAlignment.Left
+			label.TextTruncate = Enum.TextTruncate.AtEnd
+			label.ZIndex = 2
+			label.Parent = frame
+			
+			local colorBox = Instance.new("TextButton")
+			colorBox.Size = UDim2.new(0, 60, 0, 28)
+			colorBox.Position = UDim2.new(1, -70, 0.5, -14)
+			colorBox.BackgroundColor3 = currentColor
+			colorBox.Text = ""
+			colorBox.AutoButtonColor = false
+			colorBox.ZIndex = 2
+			colorBox.Parent = frame
+			Corner(colorBox, 4)
+			Stroke(colorBox, Theme.Stroke, 1)
+			
+			local pickerOpen = false
+			local pickerFrame = nil
+			
+			colorBox.MouseButton1Click:Connect(function()
+				pickerOpen = not pickerOpen
+				if pickerOpen then
+					pickerFrame = Instance.new("Frame")
+					pickerFrame.Size = UDim2.new(0, 220, 0, 150)
+					pickerFrame.Position = UDim2.new(0, frame.AbsolutePosition.X + 130, 0, frame.AbsolutePosition.Y + 47)
+					pickerFrame.BackgroundColor3 = Theme.Element
+					pickerFrame.ZIndex = 10000
+					pickerFrame.Parent = DropdownOverlay
+					Corner(pickerFrame, 6)
+					Stroke(pickerFrame, Theme.Stroke, 1)
+					
+					local hue, sat, val = currentColor:ToHSV()
+					
+					local function CreateRGBSlider(yPos, colorName, defaultVal)
+						local sliderLabel = Instance.new("TextLabel")
+						sliderLabel.Text = colorName
+						sliderLabel.Size = UDim2.new(0, 20, 0, 20)
+						sliderLabel.Position = UDim2.new(0, 10, 0, yPos)
+						sliderLabel.BackgroundTransparency = 1
+						sliderLabel.TextColor3 = Theme.Text
+						sliderLabel.Font = Enum.Font.Gotham
+						sliderLabel.TextSize = 12
+						sliderLabel.TextXAlignment = Enum.TextXAlignment.Left
+						sliderLabel.ZIndex = 10001
+						sliderLabel.Parent = pickerFrame
+						
+						local sliderTrack = Instance.new("Frame")
+						sliderTrack.Size = UDim2.new(1, -110, 0, 6)
+						sliderTrack.Position = UDim2.new(0, 35, 0, yPos + 7)
+						sliderTrack.BackgroundColor3 = Theme.Main
+						sliderTrack.ZIndex = 10001
+						sliderTrack.Parent = pickerFrame
+						Corner(sliderTrack, 3)
+						
+						local sliderFill = Instance.new("Frame")
+						sliderFill.Size = UDim2.new(defaultVal / 255, 0, 1, 0)
+						sliderFill.BackgroundColor3 = Theme.Accent
+						sliderFill.ZIndex = 10001
+						sliderFill.Parent = sliderTrack
+						Corner(sliderFill, 3)
+						
+						local valueLabel = Instance.new("TextLabel")
+						valueLabel.Text = tostring(math.floor(defaultVal))
+						valueLabel.Size = UDim2.new(0, 40, 0, 20)
+						valueLabel.Position = UDim2.new(1, -50, 0, yPos)
+						valueLabel.BackgroundTransparency = 1
+						valueLabel.TextColor3 = Theme.Accent
+						valueLabel.Font = Enum.Font.GothamBold
+						valueLabel.TextSize = 12
+						valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+						valueLabel.ZIndex = 10001
+						valueLabel.Parent = pickerFrame
+						
+						local dragging = false
+						sliderTrack.InputBegan:Connect(function(input)
+							if input.UserInputType == Enum.UserInputType.MouseButton1 then
+								dragging = true
+								local rel = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
+								local val = math.floor(rel * 255)
+								sliderFill.Size = UDim2.new(rel, 0, 1, 0)
+								valueLabel.Text = tostring(val)
+								return val
+							end
+						end)
+						UIS.InputChanged:Connect(function(input)
+							if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+								local rel = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
+								local val = math.floor(rel * 255)
+								sliderFill.Size = UDim2.new(rel, 0, 1, 0)
+								valueLabel.Text = tostring(val)
+							end
+						end)
+						UIS.InputEnded:Connect(function(input)
+							if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+						end)
+						
+						return {GetValue = function() return tonumber(valueLabel.Text) or 0 end}
+					end
+					
+					local r, g, b = math.floor(currentColor.R * 255), math.floor(currentColor.G * 255), math.floor(currentColor.B * 255)
+					local rSlider = CreateRGBSlider(15, "R", r)
+					local gSlider = CreateRGBSlider(45, "G", g)
+					local bSlider = CreateRGBSlider(75, "B", b)
+					
+					local applyBtn = Instance.new("TextButton")
+					applyBtn.Size = UDim2.new(0, 80, 0, 28)
+					applyBtn.Position = UDim2.new(0.5, -40, 1, -38)
+					applyBtn.BackgroundColor3 = Theme.Accent
+					applyBtn.Text = "Apply"
+					applyBtn.Font = Enum.Font.GothamBold
+					applyBtn.TextSize = 13
+					applyBtn.TextColor3 = Theme.Text
+					applyBtn.ZIndex = 10001
+					applyBtn.Parent = pickerFrame
+					Corner(applyBtn, 4)
+					
+					applyBtn.MouseButton1Click:Connect(function()
+						local newR = rSlider.GetValue() / 255
+						local newG = gSlider.GetValue() / 255
+						local newB = bSlider.GetValue() / 255
+						currentColor = Color3.new(newR, newG, newB)
+						colorBox.BackgroundColor3 = currentColor
+						if config.Callback then task.spawn(config.Callback, currentColor) end
+						pickerFrame:Destroy()
+						pickerOpen = false
+					end)
+				else
+					if pickerFrame then
+						pickerFrame:Destroy()
+						pickerFrame = nil
+					end
+				end
+			end)
+			
+			return {
+				SetColor = function(self, color)
+					currentColor = color
+					colorBox.BackgroundColor3 = color
+					if config.Callback then task.spawn(config.Callback, color) end
+				end,
+				GetColor = function(self)
+					return currentColor
+				end,
+				SetCallback = function(self, callback)
+					config.Callback = callback
+				end
+			}
+		end
+		
 		return Elements
 	end
 	
@@ -1120,6 +1327,133 @@ function Chuddy:CreateWindow(config)
 	if PlayerTab and not PlayerTabCreated then
 		PlayerTabCreated = true
 		local Player = Tabs:CreateTab("Player", DefaultIcons.User)
+		
+		local ESPObjects = {}
+		local AimbotSettings = {
+			Enabled = false,
+			FOV = 250,
+			Smoothness = 1,
+			VisibleCheck = true,
+			TeamCheck = true,
+			TriggerKey = nil,
+			HitPart = "Head",
+			HitPartOptions = {"Head", "UpperTorso", "LowerTorso", "HumanoidRootPart"}
+		}
+		
+		Player:CreateSection("ESP")
+		
+		local espEnabled = false
+		Player:CreateToggle({Name = "Enable ESP", Default = false, Callback = function(state)
+			espEnabled = state
+			for _, p in ipairs(Players:GetPlayers()) do
+				if state then
+					if p ~= LP and p.Character then
+						local h = Instance.new("Highlight")
+						h.Name = GenerateRandomString(10)
+						h.FillColor = Color3.fromRGB(255, 255, 255)
+						h.OutlineColor = Color3.fromRGB(200, 200, 200)
+						h.FillTransparency = 0.5
+						h.OutlineTransparency = 0
+						h.Parent = p.Character
+						ESPObjects[p] = h
+					end
+				else
+					if ESPObjects[p] then
+						ESPObjects[p]:Destroy()
+						ESPObjects[p] = nil
+					end
+				end
+			end
+		end})
+		
+		local espFillColor = Player:CreateColorPicker({Name = "ESP Fill Color", Default = Color3.fromRGB(255, 255, 255), Callback = function(color)
+			for _, h in pairs(ESPObjects) do
+				if h and h.Parent then h.FillColor = color end
+			end
+		end})
+		
+		local espOutlineColor = Player:CreateColorPicker({Name = "ESP Outline Color", Default = Color3.fromRGB(200, 200, 200), Callback = function(color)
+			for _, h in pairs(ESPObjects) do
+				if h and h.Parent then h.OutlineColor = color end
+			end
+		end})
+		
+		Player:CreateSlider({Name = "Fill Transparency", Min = 0, Max = 100, Default = 50, Callback = function(value)
+			local trans = value / 100
+			for _, h in pairs(ESPObjects) do
+				if h and h.Parent then h.FillTransparency = trans end
+			end
+		end})
+		
+		Player:CreateToggle({Name = "Team Check", Default = true, Callback = function(state)
+		end})
+		
+		Player:CreateSection("Aimbot")
+		
+		Player:CreateToggle({Name = "Enable Aimbot", Default = false, Callback = function(state)
+			AimbotSettings.Enabled = state
+		end})
+		
+		Player:CreateKeybind({Name = "Aimbot Key", Default = nil, Callback = function(key)
+			AimbotSettings.TriggerKey = key
+		end})
+		
+		Player:CreateSlider({Name = "FOV", Min = 50, Max = 500, Default = 250, Callback = function(value)
+			AimbotSettings.FOV = value
+		end})
+		
+		Player:CreateSlider({Name = "Smoothness", Min = 1, Max = 20, Default = 1, Callback = function(value)
+			AimbotSettings.Smoothness = value
+		end})
+		
+		Player:CreateDropdown({Name = "Hit Part", Options = AimbotSettings.HitPartOptions, Default = "Head", Callback = function(value)
+			AimbotSettings.HitPart = value
+		end})
+		
+		Player:CreateToggle({Name = "Visible Check", Default = true, Callback = function(state)
+			AimbotSettings.VisibleCheck = state
+		end})
+		
+		Player:CreateToggle({Name = "Team Check", Default = true, Callback = function(state)
+			AimbotSettings.TeamCheck = state
+		end})
+		
+		RS.RenderStepped:Connect(function()
+			if AimbotSettings.Enabled and AimbotSettings.TriggerKey and UIS:IsKeyDown(AimbotSettings.TriggerKey) then
+				local closest, closestDist = nil, AimbotSettings.FOV
+				for _, p in ipairs(Players:GetPlayers()) do
+					if p ~= LP and p.Character and p.Character:FindFirstChild(AimbotSettings.HitPart) then
+						local part = p.Character[AimbotSettings.HitPart]
+						local pos, onscreen = Camera:WorldToViewportPoint(part.Position)
+						if onscreen then
+							local dist = (Vector2.new(pos.X, pos.Y) - Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)).Magnitude
+							if dist < closestDist then
+								if AimbotSettings.VisibleCheck then
+									local ray = workspace:FindPartOnRayWithIgnoreList(
+										Ray.new(Camera.CFrame.Position, (part.Position - Camera.CFrame.Position).Unit * (part.Position - Camera.CFrame.Position).Magnitude),
+										{LP.Character, Camera}
+									)
+									if not ray or not ray:IsDescendantOf(p.Character) then
+										continue
+									end
+								end
+								if AimbotSettings.TeamCheck and p.Team == LP.Team then
+									continue
+								end
+								closest = part
+								closestDist = dist
+							end
+						end
+					end
+				end
+				if closest then
+					local targetPos = closest.Position
+					local currentCam = Camera.CFrame
+					local newCam = CFrame.new(currentCam.Position, targetPos)
+					Camera.CFrame = currentCam:Lerp(newCam, 1 / AimbotSettings.Smoothness)
+				end
+			end
+		end)
 		
 		Player:CreateSection("Movement")
 		
@@ -1189,6 +1523,7 @@ function Chuddy:CreateWindow(config)
 		local flying = false
 		local flySpeed = 50
 		local flyKey = nil
+		local flyMethod = "BodyVelocity"
 		
 		Player:CreateKeybind({Name = "Fly Toggle", Default = nil, Callback = function(key)
 			if flyKey and Connections.FlyKey then Connections.FlyKey:Disconnect() end
@@ -1202,33 +1537,51 @@ function Chuddy:CreateWindow(config)
 						local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
 						if not humanoidRootPart then return end
 						if flying then
-							local bodyGyro = Instance.new("BodyGyro")
-							local bodyVelocity = Instance.new("BodyVelocity")
-							bodyGyro.P = 9e4
-							bodyGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-							bodyGyro.cframe = humanoidRootPart.CFrame
-							bodyGyro.Parent = humanoidRootPart
-							bodyVelocity.velocity = Vector3.zero
-							bodyVelocity.maxForce = Vector3.new(9e9, 9e9, 9e9)
-							bodyVelocity.Parent = humanoidRootPart
-							Connections.Fly = RS.Heartbeat:Connect(function()
-								if not flying or not character or not humanoidRootPart or not humanoidRootPart.Parent then
-									if bodyGyro then bodyGyro:Destroy() end
-									if bodyVelocity then bodyVelocity:Destroy() end
-									if Connections.Fly then Connections.Fly:Disconnect() end
-									return
-								end
-								local camera = workspace.CurrentCamera
-								bodyGyro.cframe = camera.CFrame
-								local velocity = Vector3.zero
-								if UIS:IsKeyDown(Enum.KeyCode.W) then velocity = velocity + (camera.CFrame.LookVector * flySpeed) end
-								if UIS:IsKeyDown(Enum.KeyCode.S) then velocity = velocity - (camera.CFrame.LookVector * flySpeed) end
-								if UIS:IsKeyDown(Enum.KeyCode.D) then velocity = velocity + (camera.CFrame.RightVector * flySpeed) end
-								if UIS:IsKeyDown(Enum.KeyCode.A) then velocity = velocity - (camera.CFrame.RightVector * flySpeed) end
-								if UIS:IsKeyDown(Enum.KeyCode.Space) then velocity = velocity + Vector3.new(0, flySpeed, 0) end
-								if UIS:IsKeyDown(Enum.KeyCode.LeftShift) or UIS:IsKeyDown(Enum.KeyCode.LeftControl) then velocity = velocity - Vector3.new(0, flySpeed, 0) end
-								bodyVelocity.velocity = velocity
-							end)
+							if flyMethod == "BodyVelocity" then
+								local bodyGyro = Instance.new("BodyGyro")
+								local bodyVelocity = Instance.new("BodyVelocity")
+								bodyGyro.P = 9e4
+								bodyGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+								bodyGyro.cframe = humanoidRootPart.CFrame
+								bodyGyro.Parent = humanoidRootPart
+								bodyVelocity.velocity = Vector3.zero
+								bodyVelocity.maxForce = Vector3.new(9e9, 9e9, 9e9)
+								bodyVelocity.Parent = humanoidRootPart
+								Connections.Fly = RS.Heartbeat:Connect(function()
+									if not flying or not character or not humanoidRootPart or not humanoidRootPart.Parent then
+										if bodyGyro then bodyGyro:Destroy() end
+										if bodyVelocity then bodyVelocity:Destroy() end
+										if Connections.Fly then Connections.Fly:Disconnect() end
+										return
+									end
+									local camera = workspace.CurrentCamera
+									bodyGyro.cframe = camera.CFrame
+									local velocity = Vector3.zero
+									if UIS:IsKeyDown(Enum.KeyCode.W) then velocity = velocity + (camera.CFrame.LookVector * flySpeed) end
+									if UIS:IsKeyDown(Enum.KeyCode.S) then velocity = velocity - (camera.CFrame.LookVector * flySpeed) end
+									if UIS:IsKeyDown(Enum.KeyCode.D) then velocity = velocity + (camera.CFrame.RightVector * flySpeed) end
+									if UIS:IsKeyDown(Enum.KeyCode.A) then velocity = velocity - (camera.CFrame.RightVector * flySpeed) end
+									if UIS:IsKeyDown(Enum.KeyCode.Space) then velocity = velocity + Vector3.new(0, flySpeed, 0) end
+									if UIS:IsKeyDown(Enum.KeyCode.LeftShift) or UIS:IsKeyDown(Enum.KeyCode.LeftControl) then velocity = velocity - Vector3.new(0, flySpeed, 0) end
+									bodyVelocity.velocity = velocity
+								end)
+							elseif flyMethod == "CFrame" then
+								Connections.Fly = RS.Heartbeat:Connect(function()
+									if not flying or not character or not humanoidRootPart or not humanoidRootPart.Parent then
+										if Connections.Fly then Connections.Fly:Disconnect() end
+										return
+									end
+									local camera = workspace.CurrentCamera
+									local velocity = Vector3.zero
+									if UIS:IsKeyDown(Enum.KeyCode.W) then velocity = velocity + (camera.CFrame.LookVector * flySpeed * 0.05) end
+									if UIS:IsKeyDown(Enum.KeyCode.S) then velocity = velocity - (camera.CFrame.LookVector * flySpeed * 0.05) end
+									if UIS:IsKeyDown(Enum.KeyCode.D) then velocity = velocity + (camera.CFrame.RightVector * flySpeed * 0.05) end
+									if UIS:IsKeyDown(Enum.KeyCode.A) then velocity = velocity - (camera.CFrame.RightVector * flySpeed * 0.05) end
+									if UIS:IsKeyDown(Enum.KeyCode.Space) then velocity = velocity + Vector3.new(0, flySpeed * 0.05, 0) end
+									if UIS:IsKeyDown(Enum.KeyCode.LeftShift) or UIS:IsKeyDown(Enum.KeyCode.LeftControl) then velocity = velocity - Vector3.new(0, flySpeed * 0.05, 0) end
+									humanoidRootPart.CFrame = humanoidRootPart.CFrame + velocity
+								end)
+							end
 						else
 							if Connections.Fly then Connections.Fly:Disconnect() end
 						end
@@ -1238,60 +1591,102 @@ function Chuddy:CreateWindow(config)
 		end})
 		
 		Player:CreateSlider({Name = "Fly Speed", Min = 10, Max = 200, Default = 50, Callback = function(value) flySpeed = value end})
+		Player:CreateDropdown({Name = "Fly Method", Options = {"BodyVelocity", "CFrame"}, Default = "BodyVelocity", Callback = function(value) flyMethod = value end})
 		
-		local vflying = false
-		local vflyKey = nil
+		Player:CreateSection("Noclip")
 		
-		Player:CreateKeybind({Name = "Vehicle Fly Toggle", Default = nil, Callback = function(key)
-			if vflyKey and Connections.VFlyKey then Connections.VFlyKey:Disconnect() end
-			vflyKey = key
-			if key then
-				Connections.VFlyKey = UIS.InputBegan:Connect(function(input, gameProcessed)
-					if not gameProcessed and input.KeyCode == vflyKey then
-						vflying = not vflying
-						local character = LP.Character
-						if not character then return end
-						local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-						if not humanoidRootPart then return end
-						local humanoid = character:FindFirstChildOfClass("Humanoid")
-						if not humanoid or not humanoid.SeatPart then return end
-						if vflying then
-							local seat = humanoid.SeatPart
-							local vehicle = seat:FindFirstAncestorOfClass("Model")
-							if not vehicle or not vehicle.PrimaryPart then return end
-							local bodyGyro = Instance.new("BodyGyro")
-							local bodyVelocity = Instance.new("BodyVelocity")
-							bodyGyro.P = 9e4
-							bodyGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-							bodyGyro.cframe = vehicle.PrimaryPart.CFrame
-							bodyGyro.Parent = vehicle.PrimaryPart
-							bodyVelocity.velocity = Vector3.zero
-							bodyVelocity.maxForce = Vector3.new(9e9, 9e9, 9e9)
-							bodyVelocity.Parent = vehicle.PrimaryPart
-							Connections.VFly = RS.Heartbeat:Connect(function()
-								if not vflying or not vehicle or not vehicle.PrimaryPart or not vehicle.PrimaryPart.Parent then
-									if bodyGyro then bodyGyro:Destroy() end
-									if bodyVelocity then bodyVelocity:Destroy() end
-									if Connections.VFly then Connections.VFly:Disconnect() end
-									return
+		local noclipEnabled = false
+		local noclipMethod = "Loop"
+		local noclipInterval = 0.3
+		
+		Player:CreateToggle({Name = "Enable Noclip", Default = false, Callback = function(state)
+			noclipEnabled = state
+			if state then
+				if noclipMethod == "Loop" then
+					if Connections.Noclip then Connections.Noclip:Disconnect() end
+					Connections.Noclip = task.spawn(function()
+						while noclipEnabled do
+							if LP.Character then
+								for _, v in pairs(LP.Character:GetDescendants()) do
+									if v:IsA("BasePart") then
+										pcall(function() v.CanCollide = false end)
+									end
 								end
-								local camera = workspace.CurrentCamera
-								bodyGyro.cframe = camera.CFrame
-								local velocity = Vector3.zero
-								if UIS:IsKeyDown(Enum.KeyCode.W) then velocity = velocity + (camera.CFrame.LookVector * flySpeed) end
-								if UIS:IsKeyDown(Enum.KeyCode.S) then velocity = velocity - (camera.CFrame.LookVector * flySpeed) end
-								if UIS:IsKeyDown(Enum.KeyCode.D) then velocity = velocity + (camera.CFrame.RightVector * flySpeed) end
-								if UIS:IsKeyDown(Enum.KeyCode.A) then velocity = velocity - (camera.CFrame.RightVector * flySpeed) end
-								if UIS:IsKeyDown(Enum.KeyCode.Space) then velocity = velocity + Vector3.new(0, flySpeed, 0) end
-								if UIS:IsKeyDown(Enum.KeyCode.LeftShift) or UIS:IsKeyDown(Enum.KeyCode.LeftControl) then velocity = velocity - Vector3.new(0, flySpeed, 0) end
-								bodyVelocity.velocity = velocity
-							end)
-						else
-							if Connections.VFly then Connections.VFly:Disconnect() end
+							end
+							task.wait(noclipInterval)
+						end
+					end)
+				elseif noclipMethod == "Stepped" then
+					if Connections.Noclip then Connections.Noclip:Disconnect() end
+					Connections.Noclip = RS.Stepped:Connect(function()
+						if LP.Character then
+							for _, v in pairs(LP.Character:GetDescendants()) do
+								if v:IsA("BasePart") then
+									pcall(function() v.CanCollide = false end)
+								end
+							end
+						end
+					end)
+				end
+			else
+				if Connections.Noclip then
+					if type(Connections.Noclip) == "thread" then
+						task.cancel(Connections.Noclip)
+					else
+						Connections.Noclip:Disconnect()
+					end
+					Connections.Noclip = nil
+				end
+				if LP.Character then
+					for _, v in pairs(LP.Character:GetDescendants()) do
+						if v:IsA("BasePart") then
+							pcall(function() v.CanCollide = true end)
 						end
 					end
-				end)
+				end
 			end
+		end})
+		
+		Player:CreateDropdown({Name = "Noclip Method", Options = {"Loop", "Stepped"}, Default = "Loop", Callback = function(value)
+			noclipMethod = value
+			if noclipEnabled then
+				if Connections.Noclip then
+					if type(Connections.Noclip) == "thread" then
+						task.cancel(Connections.Noclip)
+					else
+						Connections.Noclip:Disconnect()
+					end
+					Connections.Noclip = nil
+				end
+				if noclipMethod == "Loop" then
+					Connections.Noclip = task.spawn(function()
+						while noclipEnabled do
+							if LP.Character then
+								for _, v in pairs(LP.Character:GetDescendants()) do
+									if v:IsA("BasePart") then
+										pcall(function() v.CanCollide = false end)
+									end
+								end
+							end
+							task.wait(noclipInterval)
+						end
+					end)
+				elseif noclipMethod == "Stepped" then
+					Connections.Noclip = RS.Stepped:Connect(function()
+						if LP.Character then
+							for _, v in pairs(LP.Character:GetDescendants()) do
+								if v:IsA("BasePart") then
+									pcall(function() v.CanCollide = false end)
+								end
+							end
+						end
+					end)
+				end
+			end
+		end})
+		
+		Player:CreateSlider({Name = "Loop Interval", Min = 1, Max = 10, Default = 3, Callback = function(value)
+			noclipInterval = value / 10
 		end})
 		
 		Player:CreateSection("Click TP")
@@ -1343,7 +1738,7 @@ function Chuddy:CreateWindow(config)
 				if LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
 					local humanoidRootPart = LP.Character.HumanoidRootPart
 					local bodyAngularVelocity = Instance.new("BodyAngularVelocity")
-					bodyAngularVelocity.Name = "Spin"
+					bodyAngularVelocity.Name = GenerateRandomString(10)
 					bodyAngularVelocity.Parent = humanoidRootPart
 					bodyAngularVelocity.MaxTorque = Vector3.new(0, math.huge, 0)
 					bodyAngularVelocity.P = 9e9
@@ -1378,7 +1773,7 @@ function Chuddy:CreateWindow(config)
 	end
 	
 	local SettingsPage = Instance.new("ScrollingFrame")
-	SettingsPage.Name = "SettingsPage"
+	SettingsPage.Name = GenerateRandomString(12)
 	SettingsPage.Size = UDim2.new(1, 0, 1, 0)
 	SettingsPage.BackgroundTransparency = 1
 	SettingsPage.BorderSizePixel = 0
@@ -1392,7 +1787,7 @@ function Chuddy:CreateWindow(config)
 	SettingsPage.Parent = Pages
 	
 	local SettingsLayout = Instance.new("UIListLayout")
-	SettingsLayout.Padding = UDim.new(0, 15)
+	SettingsLayout.Padding = UDim.new(0, 20)
 	SettingsLayout.Parent = SettingsPage
 	Padding(SettingsPage, 15, 20, 20, 15)
 	
@@ -1482,6 +1877,55 @@ function Chuddy:CreateWindow(config)
 			elseif input.UserInputType == Enum.UserInputType.Keyboard and not gameProcessed then ToggleKeybind = input.KeyCode keybindButton.Text = "[" .. input.KeyCode.Name .. "]" keybindButton.TextColor3 = Theme.Accent keybindListening = false end
 		end
 	end)
+	
+	CreateSettingsSection("Theme Editor")
+	
+	local mainColor = Instance.new("Frame")
+	mainColor.Size = UDim2.new(0.48, 0, 0, 42)
+	mainColor.BackgroundTransparency = 1
+	mainColor.Parent = SettingsPage
+	
+	local mainLabel = Instance.new("TextLabel")
+	mainLabel.Text = "Main Color"
+	mainLabel.Size = UDim2.new(1, -70, 1, 0)
+	mainLabel.BackgroundTransparency = 1
+	mainLabel.TextColor3 = Theme.Text
+	mainLabel.Font = Enum.Font.GothamSemibold
+	mainLabel.TextSize = 13
+	mainLabel.TextXAlignment = Enum.TextXAlignment.Left
+	mainLabel.Parent = mainColor
+	
+	local mainPicker = Instance.new("TextButton")
+	mainPicker.Size = UDim2.new(0, 60, 0, 28)
+	mainPicker.Position = UDim2.new(1, -60, 0.5, -14)
+	mainPicker.BackgroundColor3 = Theme.Main
+	mainPicker.Text = ""
+	mainPicker.Parent = mainColor
+	Corner(mainPicker, 4)
+	
+	local sidebarColor = Instance.new("Frame")
+	sidebarColor.Size = UDim2.new(0.48, 0, 0, 42)
+	sidebarColor.Position = UDim2.new(0.52, 0, 0, 0)
+	sidebarColor.BackgroundTransparency = 1
+	sidebarColor.Parent = SettingsPage
+	
+	local sidebarLabel = Instance.new("TextLabel")
+	sidebarLabel.Text = "Sidebar Color"
+	sidebarLabel.Size = UDim2.new(1, -70, 1, 0)
+	sidebarLabel.BackgroundTransparency = 1
+	sidebarLabel.TextColor3 = Theme.Text
+	sidebarLabel.Font = Enum.Font.GothamSemibold
+	sidebarLabel.TextSize = 13
+	sidebarLabel.TextXAlignment = Enum.TextXAlignment.Left
+	sidebarLabel.Parent = sidebarColor
+	
+	local sidebarPicker = Instance.new("TextButton")
+	sidebarPicker.Size = UDim2.new(0, 60, 0, 28)
+	sidebarPicker.Position = UDim2.new(1, -60, 0.5, -14)
+	sidebarPicker.BackgroundColor3 = Theme.Sidebar
+	sidebarPicker.Text = ""
+	sidebarPicker.Parent = sidebarColor
+	Corner(sidebarPicker, 4)
 	
 	CreateSettingsSection("Theme Management")
 	
@@ -1848,7 +2292,7 @@ function Chuddy:CreateWindow(config)
 	end)
 	
 	local SettingsButton = Instance.new("TextButton")
-	SettingsButton.Name = "SettingsBtn"
+	SettingsButton.Name = GenerateRandomString(12)
 	SettingsButton.Size = UDim2.new(1, -20, 1, -5)
 	SettingsButton.Position = UDim2.new(0, 10, 0, 0)
 	SettingsButton.BackgroundTransparency = 1
@@ -1860,7 +2304,7 @@ function Chuddy:CreateWindow(config)
 	Corner(SettingsButton, 6)
 	
 	local SettingsIcon = Instance.new("ImageLabel")
-	SettingsIcon.Name = "Icon"
+	SettingsIcon.Name = GenerateRandomString(10)
 	SettingsIcon.Size = UDim2.new(0, 18, 0, 18)
 	SettingsIcon.Position = UDim2.new(0, 12, 0.5, -9)
 	SettingsIcon.BackgroundTransparency = 1
@@ -1869,7 +2313,7 @@ function Chuddy:CreateWindow(config)
 	SettingsIcon.Parent = SettingsButton
 	
 	local SettingsLabel = Instance.new("TextLabel")
-	SettingsLabel.Name = "Label"
+	SettingsLabel.Name = GenerateRandomString(10)
 	SettingsLabel.Text = "Settings"
 	SettingsLabel.Size = UDim2.new(1, -50, 1, 0)
 	SettingsLabel.Position = UDim2.new(0, 42, 0, 0)
@@ -1900,13 +2344,6 @@ function Chuddy:CreateWindow(config)
 		local configData = LoadConfig(autoloadName)
 		if configData and configData.theme then for key, value in pairs(configData.theme) do Theme[key] = value end end
 	end
-	
-	print("╔══════════════════════════════════════════╗")
-	print("║       CHUDDY HUB - Made by foeky         ║")
-	print("╚══════════════════════════════════════════╝")
-	print("✓ GUI Loaded Successfully")
-	print("Press [" .. (ToggleKeybind and ToggleKeybind.Name or "NONE") .. "] to toggle")
-	print("Version: " .. Chuddy.Version)
 	
 	CurrentWindow = Tabs
 	return Tabs
